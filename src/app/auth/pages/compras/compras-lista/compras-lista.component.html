@@ -1,0 +1,121 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/income-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">Total usuarios</h6>
+                            <h2 class="m-t-0 text-white" *ngIf='total'>{{total}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-success">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/expense-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">Total activos</h6>
+                            <h2 class="m-t-0 text-white" *ngIf='total_activos'>{{total_activos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/assets-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">total inactivos</h6>
+                            <h2 class="m-t-0 text-white" *ngIf='total_inactivos'>{{total_inactivos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-danger">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">total nuevos</h6>
+                            <h2 class="m-t-0 text-white" *ngIf='total_nuevos'>{{total_nuevos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" *ngIf="!Object_compras">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="Object_compras">
+            <div class="card-body table-responsive p-0">
+                <div class="col-lg-12 m-b-30">
+                    <p>
+                        <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fa fa-info"></i> Información
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapseExample">
+                        Los usuarios <span class="text-danger">Inactivos</span> no tendrán acceso al sistema, el <strong>administrador </strong> podrá activar o inactivar al usuario.
+                    </div>
+                </div>
+                <!-- <button type="button" (click)="siguiente(1)" class="btn btn-sucess">
+                    Siguiente
+                </button> -->
+                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.Object_compras">
+                    <thead>
+                        <tr>
+                        	<th>CI/RUC proveedor</th>
+                            <th>Proveedor</th>
+                            <th>Nº fact</th>
+                            <th>Fecha</th>
+                            <th>Subtotal</th>
+                            <th>Total</th>
+                            <th>Cant</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let us of this.lista_compras; let i =index">
+                            <td>{{ us.proveedor.ciruc }}</td>
+                            <td> {{us.proveedor.nombres}} {{us.proveedor.apellidos}} </td>
+                            <td>{{ us.numfactura}}</td>
+                            <td>{{ us.fechaemision}}</td>
+                            <td>{{ us.subtotal}}</td>
+                            <td>{{ us.total}}</td>
+                            <td>{{ us.detallecompras.length}}</td>
+                            <td>
+                                <a class="btn btn-outline-secondary btn-xs" 
+                                (click)="openVerModalUsers(verCliente,us)" title="Ver usuario">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <a class="btn btn-outline-success btn-xs" 
+                                [routerLink]="['/users/edit',us.id]" title="Editar usuario">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                                <a [routerLink]="['/users/detail',us.id]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>

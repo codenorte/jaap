@@ -1,0 +1,324 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/income-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total||total==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total usuarios</h6>
+                            <h2 class="m-t-0 text-white">{{total}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-success">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/assets-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_activos||total_activos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Usuarios activos</h6>
+                            <h2 class="m-t-0 text-white">{{total_activos}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-secondary">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                         <div class="align-self-center" *ngIf="total_inactivos||total_inactivos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Usuarios inactivos</h6>
+                            <h2 class="m-t-0 text-white">{{total_inactivos}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-danger">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                         <div class="align-self-center" *ngIf="total_retirados||total_retirados==0">
+                            <h6 class="text-white m-t-10 m-b-0">Usuarios retirados</h6>
+                            <h2 class="m-t-0 text-white">{{total_retirados}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" *ngIf="!temp_var">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12">
+             <div class="card">
+                <div class="card-body">
+                    <h4>Agregar un usuario</h4>
+                    <p>En esta seccion usted podrá agregar un usuario nuevo.</p>
+                    <button class="btn btn-primary" (click)="openAgregarNuevoUsuarioModal(agregarNuevoUsuario)">
+                        Agregar nuevo usuario <i class="fa fa-plus-circle"></i>
+                    </button> &nbsp;&nbsp;
+                    <!-- <button class="btn btn-info" (click)="openSeleccionarUsuarioModal(seleccionarUsuario)">
+                        Agregar usuario existente <i class="fa fa-id-card"></i>
+                    </button> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-12" *ngIf="temp_var">
+            <div class="card-body table-responsive p-0">
+                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>CI/RUC</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Apodo</th>
+                            <th>Sector</th>
+                            <th>Referencia</th>
+                            <th>Estado</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let us of this.lista_aguasobrante; let i =index">
+                            <td>{{ i + 1}}</td>
+                            <td>
+                                {{ us.users_select.RUCCI}}
+                            </td>
+                            <td>{{ us.users_select.NOMBRES}}</td>
+                            <td>{{ us.users_select.APELLIDOS}}</td>
+                            <td>{{ us.users_select.APADOSN}}</td>
+                            <td>{{ us.users_select.SECTOR}}</td>
+                            <td>{{ us.REFERENCIA }}</td>
+                            <td>
+                                <span *ngIf="us.ESTADO=='1'">
+                                    <label class="badge badge-success">Activo</label>
+                                </span>
+                                <span *ngIf="us.ESTADO=='0'">
+                                    <label class="badge badge-secondary">Inactivo</label>
+                                </span>
+                                <span *ngIf="us.ESTADO=='2'">
+                                    <label class="badge badge-warning">Suspendido</label>
+                                </span>
+                                <span *ngIf="us.ESTADO=='3'">
+                                    <label class="badge badge-danger">Retirado</label>
+                                </span>
+
+                                <a class="btn btn-outline-secondary btn-xs" 
+                                (click)="openEditarEstadoMedidorModal(editarEstadoMedidor,us)" title="Editar estado del medidor">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                            </td>
+                            <td class="overflow-hidden">
+                                <div ngbDropdown container="body">
+                                    <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                    <div ngbDropdownMenu>
+                                        <a ngbDropdownItem class="btn" 
+                                        (click)="openVerModalUsers(verCliente,us)" title="Ver usuario">
+                                            Ver <i class="fa fa-eye"></i>
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a ngbDropdownItem 
+                                        [routerLink]="['/aguaganaderia/aguaganaderia-edit',us.IDUSUARIO]" title="Editar usuario">
+                                            Editar <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+                                        <a ngbDropdownItem [routerLink]="['/users/detail',us.id]" title="Detalle usuario">
+                                            Entrar <i class="fa fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #operador>
+</ng-template>
+
+<!--modals crear usuario-->
+<ng-template #agregarNuevoUsuario let-modal>
+    <form role="form" #formAddUsers="ngForm" (ngSubmit)="createAguasobrante()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Agregar nuevo usuario</h4>
+            <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+                <i class="fa fa-fw fa-question"></i>
+            </button>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div id="acordion">
+                        <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                            <div class="jumbotron jumbotron-fluid p-2">
+                                <h5>Info</h5>
+                                <p>En este modal usted podrá agregar un usuario nuevo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-body">
+                        <div class="row p-t-20">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger" *ngIf="validarcedula=='0'"> 
+                                    <i class="ti-user"></i> RUC / CI:<strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                                </div>
+                                <div class="alert alert-success" *ngIf="validarcedula=='1'"> 
+                                    <i class="ti-user"></i> Datos validos: <strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                                </div>
+                                <small>Datos obligatorios(<span class="text-danger"> * </span>) </small>
+                            </div>
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> RUC / CI</span>
+                                        <input 
+                                        type="text" 
+                                        #RUCCI="ngModel" 
+                                        name="RUCCI" 
+                                        [(ngModel)]="users.RUCCI" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Ingrese su RUCCI"
+                                        pattern="[0-9]+" 
+                                        (ngModelChange)="validarCI(RUCCI)"
+                                        required
+                                        >
+
+                                        <small *ngIf="!RUCCI.valid &&RUCCI.touched" class="badge badge-danger form-control-feedback" >RUC/CI ES OBLIGATORIO</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> APODO</span>
+                                        <input type="text" #APADOSN="ngModel" name="APADOSN" [(ngModel)]="users.APADOSN" class="form-control form-control-sm" placeholder="Ingrese el APODO" required>
+                                        <small *ngIf="!APADOSN.valid &&APADOSN.touched" class="badge badge-danger form-control-feedback" >APODO ES OBLIGATORIO</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> NOMBRES</span>
+                                        <input type="text" 
+                                        #NOMBRES="ngModel" 
+                                        name="NOMBRES" 
+                                        [(ngModel)]="users.NOMBRES" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Ingrese los NOMBRES" 
+                                        (ngModelChange)="convertirMayuscula(NOMBRES)"
+                                        required pattern="[A-Z ]*" 
+                                        style="text-transform: uppercase;">
+
+                                        <small *ngIf="!NOMBRES.valid &&NOMBRES.touched" class="badge badge-danger form-control-feedback" >NOMBRES ES OBLIGATORIO</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> APELLIDOS</span>
+                                        <input type="text" 
+                                        #APELLIDOS="ngModel" 
+                                        name="APELLIDOS" 
+                                        [(ngModel)]="users.APELLIDOS" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Ingrese los APELLIDOS" 
+                                        (ngModelChange)="convertirMayuscula(APELLIDOS)"
+                                        required pattern="[A-Z ]*" 
+                                        style="text-transform: uppercase;">
+
+                                        <small *ngIf="!APELLIDOS.valid &&APELLIDOS.touched" class="badge badge-danger form-control-feedback" >APELLIDOS ES OBLIGATORIO</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label">REFERENCIA</span>
+                                        <input type="text" #REFERENCIA="ngModel" name="REFERENCIA" [(ngModel)]="users.REFERENCIA" class="form-control form-control-sm" placeholder="Ingrese su REFERENCIA">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> SECTOR</span>
+                                        <input type="text" #SECTOR="ngModel" name="SECTOR" [(ngModel)]="aguasobrante.SECTOR" class="form-control form-control-sm" placeholder="Ingrese SECTOR" required>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label">OBSERVACION</span>
+                                        <textarea #OBSERVACION="ngModel" name="OBSERVACION" [(ngModel)]="users.OBSERVACION" class="form-control form-control-sm" placeholder="Ingrese su OBSERVACION"></textarea>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <!-- 
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label">EMAIL</span>
+                                        <input type="email" 
+                                        #email="ngModel" 
+                                        name="email" 
+                                        [(ngModel)]="users.email" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Ingrese su EMAIL" 
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                        (ngModelChange)="validateEmail(email)"
+                                        >
+
+                                    </div>
+                                </div> 
+                            </div>
+                            -->
+                            <hr class="col-md-12">
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> VALOR CONEXION</span>
+                                        <input type="number" #VALORPORCONEXION="ngModel" name="VALORPORCONEXION" [(ngModel)]="aguasobrante.VALORPORCONEXION" class="form-control form-control-sm" placeholder="Ingrese VALORPORCONEXION" pattern="[0-9]+" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="control-label"><span class="text-danger"> * </span> FECHA REGISTRO</span>
+                                        <input type="date" #FECHA="ngModel" name="FECHA" [(ngModel)]="aguasobrante.FECHA" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" type="submit" [disabled]="!formAddUsers.form.valid" class="btn btn-outline-success float-right" (click)="modal.close('guardar')">GUARDAR</button>
+            <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">CANCELAR</button>
+        </div>
+    </form>
+</ng-template>
+<!--fin modals crear usuario-->

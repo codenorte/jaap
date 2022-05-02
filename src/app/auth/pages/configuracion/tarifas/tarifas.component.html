@@ -1,0 +1,194 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-12" *ngIf="!tarifas">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="tarifas">
+        	<div class="card">
+	            <div class="card-body p-0">
+	            	<h2>Datos de Tarifas de facturacion</h2>
+	            	<br>
+	            	<hr>
+            		<div class="card card-body printableArea">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-left">
+                                    <address>
+                                        <h3> &nbsp;<b class="text-danger" *ngIf="tarifas.DESCRIPCION">Descripcion: {{tarifas.DESCRIPCION}}</b></h3>
+                                        <p class="text-muted m-l-5">
+                                        	<span>
+                                        		<strong>Tarifa base en m3: </strong><span *ngIf="tarifas.BASE"> {{tarifas.BASE}} <small>m3</small></span> 
+                                        	</span>,<br>
+                                            <span>
+                                            	<strong>TARIFA BASE: </strong><span *ngIf="tarifas.TARBASE"> {{tarifas.TARBASE | currency}} <small>USD</small></span> 
+                                        	</span>,<br>
+                                            <span>
+                                                <strong>APORTE MINGA: </strong><span *ngIf="tarifas.TARBASE"> {{tarifas.APORTEMINGA | currency}} <small>USD</small></span> 
+                                            </span>,<br>
+                                            <span>
+                                            	<strong>IVA: </strong><span *ngIf="tarifas.IVA||tarifas.IVA==0"> {{tarifas.IVA | currency}} <small>%</small></span> 
+                                        	</span>,<br>
+                                            <span>
+                                            	<strong>VALOR EXCESO: </strong><span *ngIf="tarifas.VALOREXCESO"> {{tarifas.VALOREXCESO | currency}} <small>USD</small> </span> 
+                                        	</span>,<br>
+                                        	<span>
+                                            	<strong>ALCANTARRILLADO: </strong><span *ngIf="tarifas.ALCANTARRILLADO||tarifas.ALCANTARRILLADO==0"> {{tarifas.ALCANTARRILLADO | currency}} <small>USD</small> </span> 
+                                        	</span>,
+                                        </p>
+                                    </address>
+                                </div>
+                                <div class="pull-right text-right">
+                                    <button class="btn btn-primary btn-sm" (click)="editarTarifasOpenModal(editTarifasModal)" >Editar <i class="fa fa-pencil-square-o"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+	            </div>
+        	</div>
+        </div>
+    </div>
+</ng-template>
+
+<!--modals edit Institucion-->
+<ng-template #editTarifasModal let-modal>
+    <form role="form" #formEditarTarifas="ngForm" (ngSubmit)="editTarifas()">
+	    <div class="modal-header">
+	        <h4 class="modal-title" id="modal-basic-title">Editar Datos de la institución</h4>
+	        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+	            <i class="fa fa-fw fa-question"></i>
+	        </button>
+	        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+	            <span aria-hidden="true">&times;</span>
+	        </button>
+	    </div>
+	    <div class="modal-body">
+	        <div class="row">
+	            <div class="col-12">
+	                <div id="acordion">
+	                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+	                        <div class="jumbotron jumbotron-fluid p-2">
+	                            <h5>Info</h5>
+	                            <p>En esta seccion usted puede editar los datos de la tarifas.</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-12">
+	            	
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> BASE <small>m3</small></span>
+                        <input type="text" 
+                        #BASE="ngModel" 
+                        name="BASE" 
+                        [(ngModel)]="tarifas.BASE" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese VALOR" 
+                        required
+                        pattern="[0-9]+" 
+                        >
+                        <small *ngIf="!BASE.valid &&BASE.touched" class="badge badge-danger form-control-feedback" >BASE ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">IVA %</span>
+                        <input 
+                        type="text" 
+                        #IVA="ngModel" 
+                        name="IVA" 
+                        [(ngModel)]="tarifas.IVA" 
+                        class="form-control form-control-sm" 
+                        placeholder="IVA"
+                        pattern="[0-9]+" 
+                        >
+                        <small *ngIf="!IVA.valid &&IVA.touched" class="badge badge-danger form-control-feedback" >IVA ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">DESCRIPCION</span>
+                        <input type="text" 
+                        #DESCRIPCION="ngModel" 
+                        name="DESCRIPCION" 
+                        [(ngModel)]="tarifas.DESCRIPCION" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese los DESCRIPCION" 
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span>TARIFA BASE <small>$</small></span>
+                        <input 
+                        type="text" 
+                        #TARBASE="ngModel" 
+                        name="TARBASE" 
+                        [(ngModel)]="tarifas.TARBASE" 
+                        class="form-control form-control-sm" 
+                        placeholder="TARBASE"
+                        pattern="[0-9]+" 
+                        required
+                        >
+                        <small *ngIf="!TARBASE.valid &&TARBASE.touched" class="badge badge-danger form-control-feedback" >TARBASE ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">APORTE MINGA <small>$</small></span>
+                        <input 
+                        type="text" 
+                        #APORTEMINGA="ngModel" 
+                        name="APORTEMINGA" 
+                        [(ngModel)]="tarifas.APORTEMINGA" 
+                        class="form-control form-control-sm" 
+                        placeholder="APORTEMINGA"
+                        pattern="[0-9]+" 
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span>VALOREXCESO <small>$</small></span>
+                        <input 
+                        type="number" 
+                        #VALOREXCESO="ngModel" 
+                        name="VALOREXCESO" 
+                        [(ngModel)]="tarifas.VALOREXCESO" 
+                        class="form-control form-control-sm" 
+                        placeholder="VALOREXCESO"
+                        required
+                        >
+                        <small *ngIf="!VALOREXCESO.valid &&VALOREXCESO.touched" class="badge badge-danger form-control-feedback" >VALOREXCESO ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> ALCANTARRILLADO <small>$</small></span>
+                        <input 
+                        type="number" 
+                        #ALCANTARRILLADO="ngModel" 
+                        name="ALCANTARRILLADO" 
+                        [(ngModel)]="tarifas.ALCANTARRILLADO" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese VALOR"
+                        required
+                        >
+
+                        <small *ngIf="!ALCANTARRILLADO.valid &&ALCANTARRILLADO.touched" class="badge badge-danger form-control-feedback" >ALCANTARRILLADO ES OBLIGATORIO</small>
+                    </div>
+                    
+	            </div>
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button type="submit" 
+	        class="btn btn-outline-success float-right" 
+	        (click)="modal.close('guardar')"
+	        [disabled]="!formEditarTarifas.form.valid"
+	        >
+	        	<i class="fa fa-check"></i> GUARDAR
+	        </button>
+	        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+	        	CERRAR
+	        </button>
+	    </div>
+    </form>
+</ng-template>
+<!--fin modals edit Institucion-->

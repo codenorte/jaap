@@ -1,0 +1,19 @@
+ngb-pagination li {
+  &:first-child a {
+    span {
+      display: none;
+    }
+    &:before {
+      /* provide your content here */
+    }
+  }
+}
+
+.otrospagos{
+	border: 2px solid black;
+    border-radius: 2%;
+}
+
+.otrospagos b{
+	font-size: 16px;
+}

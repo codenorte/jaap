@@ -1,0 +1,146 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body pt-2 row" *ngIf="dato_proveedor">
+                    <div class="col-md-4">
+                        <address>
+                            <h3><b class="text-danger">
+                                {{dato_proveedor.nombres}} {{dato_proveedor.apellidos}}</b>
+                            </h3>
+                            <iframe src="" id="order_print" type="application/pdf" class="d-none"></iframe>
+                            <h4 class="font-bold">{{dato_proveedor.ciruc}}</h4>
+                            <p class="text-muted m-l-5">
+                                <br/> Direccion: {{dato_proveedor.direccion}},
+                                <br/> Telf /Cel : 
+                                <span>{{dato_proveedor.telefono}}</span> <span>{{dato_proveedor.celular}}</span>,
+                                <br/> Estado Usuario: 
+                                <span class="badge badge-success" *ngIf="dato_proveedor.estado==1">
+                                    Activo
+                                </span>
+                                <span class="badge badge-danger" *ngIf="dato_proveedor.estado==0">
+                                    Inactivo
+                                </span>
+                                <span class="badge badge-dark" *ngIf="dato_proveedor.estado!=0&&dato_proveedor.estado!=1">
+                                    No disponible
+                                </span>
+                            </p>
+                        </address>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="profiletimeline">
+                            <div class="sl-item">
+                                <div class="sl-right">
+                                    <address>
+                                        <span>Pagina web: {{dato_proveedor.pagina_web}}</span><br>
+                                        <span>Razon social: {{dato_proveedor.razon_social}}</span><br>
+                                        <span>Email: {{dato_proveedor.email}}</span><br>
+                                    </address>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Historial Compras</a> </li>
+                    <!-- <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Lista Compras</a> </li> -->
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de facturas</h4>
+                            </div>
+                            <div class="card-body table-responsive pt-2">
+                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                                    <thead>
+                                        <tr>
+                                            <th>Nº</th>
+                                            <th>Nombres</th>
+                                            <th>Apellidos</th>
+                                            <th>Sector</th>
+                                            <th>Estado Usuario</th>
+                                            <th style="background: #e9ecef;">Num Medidor</th>
+                                            <th>Estado Medidor</th>
+                                            <th>Tipo</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let us of this.medidorusers; let i =index">
+                                            <td>{{ i + 1}}</td>
+                                            <td>{{ us.medidor.users.NOMBRES}}</td>
+                                            <td>{{ us.medidor.users.APELLIDOS}}</td>
+                                            <td>{{ us.medidor.users.SECTOR}}</td>
+                                            <td>
+                                                <span *ngIf="us.medidor.users.ESTADO=='1'">
+                                                    <span class="badge badge-success">Activo</span>
+                                                    <a class="btn btn-outline-danger btn-xs" 
+                                                    (click)="openEstadoClienteModal(editarEstadoCliente,us,'0')" title="Deshabilitar usuario">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+                                                </span>
+                                                <span *ngIf="us.medidor.users.ESTADO=='0'">
+                                                    <span class="badge badge-danger">Inactivo</span>
+                                                    <a class="btn btn-outline-success btn-xs" 
+                                                    (click)="openEstadoClienteModal(editarEstadoCliente,us,'1')" title="Habilitar usuario">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            <td style="background: #e9ecef;">
+                                                <strong>{{ us.medidor.NUMMEDIDOR}}</strong>
+                                            </td>
+                                            <td><b><strong>{{ us.medidor.ESTADO}}</strong></b></td>
+                                            <td>
+                                                <span *ngIf="us.NIVEL==1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-info">PRINCIPAL</div>
+                                                    </div>
+                                                </span>
+                                                <span *ngIf="us.NIVEL!=1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-inverse">SECUNDARIO</div>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-outline-secondary btn-xs" 
+                                                (click)="openVerModalUsers(verCliente,us)" title="Ver medidor">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-outline-success btn-xs" 
+                                                [routerLink]="['/users/edit',us.id]" title="Editar medidor">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                                <a [routerLink]="['/medidor/detail',us.medidor.NUMMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Facturas pendientes</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    	lista de facturas pendientes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

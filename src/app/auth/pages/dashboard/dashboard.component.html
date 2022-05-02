@@ -1,0 +1,575 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'user'; then user"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/income-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total||total==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total usuarios</h6>
+                            <h2 class="m-t-0 text-white">{{total}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-success">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/assets-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_activos||total_activos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total activos</h6>
+                            <h2 class="m-t-0 text-white">{{total_activos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-danger">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/expense-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_inactivos||total_inactivos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total inactivos</h6>
+                            <h2 class="m-t-0 text-white">{{total_inactivos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_nuevos||total_nuevos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total nuevos</h6>
+                            <h2 class="m-t-0 text-white">{{total_nuevos}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" *ngIf="!listausuario">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="listausuario">
+            <div class="card-body table-responsive p-0">
+                <div class="col-lg-12 m-b-30">
+                    <p>
+                        <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fa fa-info"></i> Información
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapseExample">
+                        Los usuarios <span class="text-danger">Inactivos</span> no tendrán acceso al sistema, el <strong>administrador </strong> podrá activar o inactivar al usuario.
+                    </div>
+                </div>
+                <!-- <button type="button" (click)="siguiente(1)" class="btn btn-sucess">
+                    Siguiente
+                </button> -->
+                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>CI/RUC</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Apodo</th>
+                            <th>Sector</th>
+                            <th>Estado</th>
+                            <th>Medidor</th>
+                            <th>Codigo</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let us of this.listausuario; let i =index">
+                            <td>{{ i + 1}}</td>
+                            <td>
+                                {{ us.RUCCI}}
+                                <small class="badge badge-primary" *ngIf="us.VISTO=='0'">nuevo</small>
+                            </td>
+                            <td>{{ us.NOMBRES}}</td>
+                            <td>{{ us.APELLIDOS}}</td>
+                            <td>{{ us.APADOSN}}</td>
+                            <td>{{ us.SECTOR}}</td>
+                            <td class="overflow-hidden">
+                                <span *ngIf="us.ESTADO=='1'">
+                                    <label class="badge badge-success">Activo</label>
+                                </span>
+                                <span *ngIf="us.ESTADO=='0'">
+                                    <label class="badge badge-danger">Inactivo</label>
+                                </span>
+                                <div ngbDropdown container="body">
+                                    <button class="btn btn-outline-primary btn-xs" ngbDropdownToggle><i class="fa fa-pencil-square-o"></i></button>
+                                    <div ngbDropdownMenu>
+                                        <a class="btn" *ngIf="us.ESTADO=='1'"
+                                        (click)="openEstadoClienteModal(editarEstadoCliente,us,'0')" title="Deshabilitar usuario">
+                                            Editar estado <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+                                        <a class="btn" *ngIf="us.ESTADO=='0'" 
+                                        (click)="openEstadoClienteModal(editarEstadoCliente,us,'1')" title="Habilitar usuario">
+                                            Editar estado <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span *ngIf="us.medidor.length>0">
+                                    <span *ngIf="us.medidor[0].ESTADO=='ACTIVO'" class="text-info">
+                                        ACTIVO
+                                    </span>
+                                    <span *ngIf="us.medidor[0].ESTADO=='INACTIVO'" class="text-danger">
+                                        INACTIVO
+                                    </span>
+                                </span>
+                                <span *ngIf="us.medidor.length==0||us.medidor==null" class="text-danger">
+                                    SIN MEDIDOR
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngIf="us.medidor.length>0">
+                                    <span *ngIf="us.medidor[0].ESTADO=='ACTIVO'" class="text-info">
+                                        <strong>{{ us.medidor[0].CODIGO}}</strong>
+                                    </span>
+                                    <span *ngIf="us.medidor[0].ESTADO=='INACTIVO'" class="text-danger">
+                                        <strong>{{ us.medidor[0].CODIGO}}</strong>    
+                                    </span>
+                                </span>
+                                <span *ngIf="us.medidor.length==0||us.medidor==null" class="text-danger">
+                                    SIN MEDIDOR
+                                </span>
+                            </td>
+                            
+                            <td class="overflow-hidden">
+                                <div ngbDropdown container="body">
+                                    <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                    <div ngbDropdownMenu>
+                                        <a ngbDropdownItem class="btn" 
+                                        (click)="openVerModalUsers(verCliente,us)" title="Ver usuario">
+                                            Ver <i class="fa fa-eye"></i>
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a ngbDropdownItem 
+                                        [routerLink]="['/users/edit',us.id]" title="Editar usuario">
+                                            Editar <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+                                        <a ngbDropdownItem [routerLink]="['/users/detail',us.id]" title="Detalle usuario">
+                                            Entrar <i class="fa fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #operador>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/income-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total||total==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total usuarios</h6>
+                            <h2 class="m-t-0 text-white">{{total}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/expense-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_medidor||total_medidor==0">
+                            <h6 class="text-white m-t-10 m-b-0">Total medidores</h6>
+                            <h2 class="m-t-0 text-white">{{total_medidor}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card bg-success">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/assets-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="medidor_activos||medidor_activos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Medidores activos</h6>
+                            <h2 class="m-t-0 text-white">{{medidor_activos}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card bg-warning">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                         <div class="align-self-center" *ngIf="medidor_inactivos||medidor_inactivos==0">
+                            <h6 class="text-white m-t-10 m-b-0">Medidores inactivos</h6>
+                            <h2 class="m-t-0 text-white">{{medidor_inactivos}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card bg-danger">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                         <div class="align-self-center" *ngIf="medidor_suspendido||medidor_suspendido==0">
+                            <h6 class="text-white m-t-10 m-b-0">Medidores suspendidos</h6>
+                            <h2 class="m-t-0 text-white">{{medidor_suspendido}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" *ngIf="!listausuario">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="listausuario">
+            <div class="card-body table-responsive p-0">
+                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>CI/RUC</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Apodo</th>
+                            <th>Sector</th>
+                            <th>Estado</th>
+                            <th>Medidor</th>
+                            <th>N°</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let us of this.listausuario; let i =index">
+                            <td>{{ i + 1}}</td>
+                            <td>
+                                {{ us.RUCCI}}
+                                <small class="badge badge-primary" *ngIf="us.VISTO=='0'">nuevo</small>
+                            </td>
+                            <td>{{ us.NOMBRES}}</td>
+                            <td>{{ us.APELLIDOS}}</td>
+                            <td>{{ us.APADOSN}}</td>
+                            <td>{{ us.SECTOR}}</td>
+                            <td>
+                                <span *ngIf="us.ESTADO=='1'">
+                                    <label class="badge badge-success">Activo</label>
+                                </span>
+                                <span *ngIf="us.ESTADO=='0'">
+                                    <label class="badge badge-danger">Inactivo</label>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span *ngIf="us.medidor.length>0">
+                                    <span *ngIf="us.medidor[0].ESTADO=='ACTIVO'" class="text-info">
+                                        ACTIVO
+                                    </span>
+                                    <span *ngIf="us.medidor[0].ESTADO=='INACTIVO'" class="text-danger">
+                                        INACTIVO
+                                    </span>
+                                </span>
+                                <span *ngIf="us.medidor.length==0||us.medidor==null" class="text-danger">
+                                    SIN MEDIDOR
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngIf="us.medidor.length>0">
+                                    <span *ngIf="us.medidor[0].ESTADO=='ACTIVO'" class="text-info">
+                                        <strong>{{ us.medidor[0].NUMMEDIDOR}}</strong>
+                                    </span>
+                                    <span *ngIf="us.medidor[0].ESTADO=='INACTIVO'" class="text-danger">
+                                        <strong>{{ us.medidor[0].NUMMEDIDOR}}</strong>    
+                                    </span>
+                                </span>
+                                <span *ngIf="us.medidor.length==0||us.medidor==null" class="text-danger">
+                                    SIN MEDIDOR
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <a class="btn btn-outline-secondary btn-xs" 
+                                (click)="openVerModalUsers(verCliente,us)" title="Ver usuario">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <a 
+                                [routerLink]="['/users/detail',us.id]" class="btn btn-outline-primary btn-xs" 
+                                title="Detalle usuario"
+                                *ngIf="us.medidor.length>0"
+                                >
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #user>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/income-w.png" alt="Income" /></div>
+                        <div class="align-self-center" *ngIf="total_medidores">
+                            <h6 class="text-white m-t-10 m-b-0">Total medidor</h6>
+                            <h2 class="m-t-0 text-white">{{total_medidores}}</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-success">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/expense-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">Por pagar</h6>
+                            <h2 class="m-t-0 text-white">5 <small>meses</small></h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/assets-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">Por pagar</h6>
+                            <h2 class="m-t-0 text-white">$ 0 </h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card bg-danger">
+                <div class="card-body">
+                    <div class="d-flex no-block">
+                        <div class="m-r-20 align-self-center"><img src="../assets/images/icon/staff-w.png" alt="Income" /></div>
+                        <div class="align-self-center">
+                            <h6 class="text-white m-t-10 m-b-0">Multas</h6>
+                            <h2 class="m-t-0 text-white">$ 0</h2></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="tab-content">
+                    <div class="card pt-2">
+                        <div class="card-header bg-info">
+                            <h4 class="m-b-0 text-white">Lista de medidores</h4>
+                        </div>
+                        <div class="card-body table-responsive pt-2">
+                            <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.total_medidores">
+                                <thead>
+                                    <tr>
+                                        <th>Nº</th>
+                                        <th>Nombres</th>
+                                        <th>Apellidos</th>
+                                        <th>Sector</th>
+                                        <th style="background: #e9ecef;">Num Medidor</th>
+                                        <th>Estado Medidor</th>
+                                        <th>Tipo</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let us of this.medidorusers; let i =index">
+                                        <td>{{ i + 1}}</td>
+                                        <td>{{ us.medidor.users.NOMBRES}}</td>
+                                        <td>{{ us.medidor.users.APELLIDOS}}</td>
+                                        <td>{{ us.medidor.users.SECTOR}}</td>
+                                        <td style="background: #e9ecef;">
+                                            <strong>{{ us.medidor.NUMMEDIDOR}}</strong>
+                                        </td>
+                                        <td><b><strong>{{ us.medidor.ESTADO}}</strong></b></td>
+                                        <td>
+                                            <span *ngIf="us.NIVEL==1">
+                                                <div class="chat-content">
+                                                    <div class="box bg-light-info">PRINCIPAL</div>
+                                                </div>
+                                            </span>
+                                            <span *ngIf="us.NIVEL!=1">
+                                                <div class="chat-content">
+                                                    <div class="box bg-light-inverse">SECUNDARIO</div>
+                                                </div>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a [routerLink]="['/medidor/detail',us.medidor.IDMEDIDOR]" class="btn btn-outline-primary btn-sm" title="Detalle usuario">
+                                                Entrar <i class="fa fa-arrow-right"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<!--modals editar estado cliente-->
+<ng-template #editarEstadoCliente let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Editar estado del cliente</h4>
+        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+            <i class="fa fa-fw fa-question"></i>
+        </button>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div id="acordion">
+                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                        <div class="jumbotron jumbotron-fluid p-2">
+                            <h5>Info</h5>
+                            <p>
+                                Cuando usted 
+                                <span *ngIf="users.ESTADO==1"> inactiva, <strong>el usuario ya no podrá ingresar al sistema.</strong> </span>
+                                <span *ngIf="users.ESTADO==0"> activa, <strong>el usuario ya podrá ingresar al sistema y ver su cuenta.</strong> </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <h3 *ngIf="estadomensaje">{{ estadomensaje }}</h3>
+            </div>
+            <div class="col-md-12" *ngIf="users">
+                <p *ngIf="users.RUCCI!=null">
+                    <strong>Cedula / RUC :</strong> {{users.RUCCI}}
+                </p>
+                <p *ngIf="users.NOMBRES!=null">
+                    <strong>NOMBRES:</strong> {{users.NOMBRES}} {{users.APELLIDOS}}
+                </p>
+                <p *ngIf="users.APADOSN!=null">
+                    <strong>APODO:</strong> {{users.APADOSN}}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success float-right" (click)="modal.close('guardarestado')">SI</button>
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">NO</button>
+    </div>
+</ng-template>
+<!--fin modals editar estado cliente-->
+
+<!--modals ver cliente-->
+<ng-template #verCliente let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Cliente</h4>
+        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+            <i class="fa fa-fw fa-question"></i>
+        </button>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div id="acordion">
+                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                        <div class="jumbotron jumbotron-fluid p-2">
+                            <h5>Info</h5>
+                            <p>En este modal usted puede ver los datos del cliente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- <a 
+                type="button" 
+                aria-label="Close"
+                (click)="modal.dismiss('Cross click')"
+                class="btn btn-primary btn-sm float-right"
+                [routerLink]="['/users/perfil',dato_users.id]">
+                    VER PERFIL
+                </a> -->
+                <h3>Datos del cliente</h3>
+            </div>
+            <div class="col-md-12" *ngIf="dato_users">
+                <p *ngIf="dato_users.RUCCI!=null">
+                    <strong>Cedula / RUC :</strong> {{dato_users.RUCCI}}
+                </p>
+                <p *ngIf="dato_users.NOMBRES!=null">
+                    <strong>NOMBRES:</strong> {{dato_users.NOMBRES}} {{dato_users.APELLIDOS}}
+                </p>
+                <p *ngIf="dato_users.APADOSN!=null">
+                    <strong>APODO:</strong> {{dato_users.APADOSN}}
+                </p>
+                <p *ngIf="dato_users.ESTADO!=null">
+                    <strong>ESTADO:</strong> 
+                    <span *ngIf="dato_users.ESTADO=='1'" class="badge badge-success">ACTIVO</span>
+                    <span *ngIf="dato_users.ESTADO=='0'" class="badge badge-danger">INACTIVO</span>
+                </p>
+                <p *ngIf="dato_users.medidor.length>0">
+                    <strong>MEDIDOR ESTADO:</strong> {{dato_users.medidor[0].ESTADO}}
+                </p>
+                <p *ngIf="dato_users.medidor.length==0">
+                    <strong>MEDIDOR ESTADO:</strong> SIN MEDIDOR
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">CERRAR</button>
+    </div>
+</ng-template>
+<!--fin modals ver cliente-->

@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-6">
+    <app-doughnut title="Ventas"></app-doughnut>
+  </div>
+  <div class="col-6">
+    <app-doughnut title="Stock"
+      [labels1]="['Norte', 'Sur', 'Este']"
+      [values1]="[100, 200, 333]"
+      [colors]="['39f39f', '00aaff', '4f5e6d']"
+    ></app-doughnut>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <app-doughnut title="Más vendidos"
+      [colors]="['ff0800', 'abc123', '00a123']"
+      [values1]="[200, 20, 3]"
+    ></app-doughnut>
+  </div>
+  <div class="col-6">
+    <app-radar></app-radar>
+  </div>
+</div>

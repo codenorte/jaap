@@ -1,0 +1,186 @@
+<!-- MultiStep Form -->
+<div class="container-fluid" id="grad1">
+    <div class="row justify-content-center mt-0">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
+            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                <h2><strong>Registrar nuevo usuario y medidor</strong></h2>
+                <p>LLene el formulario y <strong>click en siguiente</strong></p>
+                <small>Datos obligatorios (<span class="text-danger"> * </span>)</small>
+                <div class="row">
+                    <div class="col-md-12 mx-0">
+                        <form role="form" #formAddUsers="ngForm" (ngSubmit)="createMedidor()" id="msform">
+                            <!-- progressbar -->
+                            <ul id="progressbar">
+                                <li class="active" id="account"><strong>Cuenta</strong></li>
+                                <li id="personal"><strong>Personal</strong></li>
+                                <li id="compass"><strong>Medidor</strong></li>
+                                <li id="confirm"><strong>Fin</strong></li>
+                            </ul> <!-- fieldsets -->
+                            <fieldset>
+                                <div class="form-card">
+                                    <h2 class="fs-title">Informacion de la cuenta</h2>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label">Email:</label>
+                                        <div class="col-9">
+                                            <input type="email" 
+                                            #email="ngModel" 
+                                            name="email" 
+                                            [(ngModel)]="users.email" 
+                                            placeholder="Ingrese su EMAIL" 
+                                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                            (ngModelChange)="validateEmail(email)"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"> Usuario:</label>
+                                        <div class="col-9">
+                                            <input type="text" #USUARIO="ngModel" name="USUARIO" [(ngModel)]="users.USUARIO" placeholder="Ingrese su USUARIO">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"> Contraseña:</label>
+                                        <div class="col-9">
+                                            <input type="password" #PASSWORD="ngModel" name="PASSWORD" [(ngModel)]="users.PASSWORD" placeholder="Ingrese su Contraseña">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="button" name="next" class="next action-button btn" value="Siguiente" />
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-card">
+                                    <h2 class="fs-title">Informacion Personal</h2> 
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"><span class="text-danger"> * </span> RUC/CI:</label>
+                                        <div class="col-9">
+                                            <input 
+                                                type="text" 
+                                                #RUCCI="ngModel" 
+                                                name="RUCCI" 
+                                                [(ngModel)]="users.RUCCI" 
+                                                placeholder="Ingrese su RUCCI"
+                                                pattern="[0-9]+" 
+                                                (ngModelChange)="validarCI(RUCCI)"
+                                                required
+                                                >
+
+                                            <small *ngIf="!RUCCI.valid &&RUCCI.touched" class="badge badge-danger form-control-feedback" >RUC/CI ES OBLIGATORIO</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"><span class="text-danger"> * </span> Nombres:</label>
+                                        <div class="col-9">
+                                            <input type="text" 
+                                            #NOMBRES="ngModel" 
+                                            name="NOMBRES" 
+                                            [(ngModel)]="users.NOMBRES" 
+                                            placeholder="Ingrese los NOMBRES" 
+                                            (ngModelChange)="convertirMayuscula(NOMBRES)"
+                                            required pattern="[A-Z ]*" 
+                                            style="text-transform: uppercase;">
+
+                                            <small *ngIf="!NOMBRES.valid &&NOMBRES.touched" class="badge badge-danger form-control-feedback" >NOMBRES ES OBLIGATORIO</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"><span class="text-danger"> * </span> Apellidos:</label>
+                                        <div class="col-9">
+                                            <input type="text" 
+                                            #APELLIDOS="ngModel" 
+                                            name="APELLIDOS" 
+                                            [(ngModel)]="users.APELLIDOS" 
+                                            placeholder="Ingrese los APELLIDOS" 
+                                            (ngModelChange)="convertirMayuscula(APELLIDOS)"
+                                            required pattern="[A-Z ]*" 
+                                            style="text-transform: uppercase;">
+
+                                            <small *ngIf="!APELLIDOS.valid &&APELLIDOS.touched" class="badge badge-danger form-control-feedback" >APELLIDOS ES OBLIGATORIO</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label">Apodo:</label>
+                                        <div class="col-9">
+                                            <input type="text" #APADOSN="ngModel" name="APADOSN" [(ngModel)]="users.APADOSN" placeholder="Ingrese el APODO">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label">Direccion:</label>
+                                        <div class="col-9">
+                                            <input type="text" #DIRECCION="ngModel" name="DIRECCION" [(ngModel)]="users.DIRECCION" placeholder="Ingrese su DIRECCION">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-3 col-form-label"> Referencia:</label>
+                                        <div class="col-9">
+                                            <textarea #REFERENCIA="ngModel" name="REFERENCIA" [(ngModel)]="users.REFERENCIA" placeholder="Ingrese su REFERENCIA"></textarea>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <input type="button" name="previous" class="previous action-button-previous" value="Atras" /> 
+                                <input type="button" name="next" class="next action-button" value="Siguiente" />
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-card">
+                                    <h2 class="fs-title">Registro medidor</h2>
+                                    <div class="form-group row mb-2">
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Sector:</label>
+                                        <div class="col-6">
+                                            <select class="form-control"  id="SECTOR"
+                                                [(ngModel)]="users.SECTOR" name="SECTOR" required>
+                                                <option *ngFor="let g of sector" [ngValue]="g.name">{{g.name}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-2">
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Codigo Medidor disponibles:</label>
+                                        <div class="col-6">
+                                            <select class="form-control"  id="CODIGO"
+                                                [(ngModel)]="medidor.CODIGO" name="CODIGO" required>
+                                                <option *ngFor="let g of codigos_disponibles" [ngValue]="g">{{g}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Valor por conexion:</label>
+                                        <div class="col-6">
+                                            <input type="number" #VALORPORCONEXION="ngModel" name="VALORPORCONEXION" [(ngModel)]="medidor.VALORPORCONEXION" placeholder="Ingrese su VALORPORCONEXION">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Fecha:</label>
+                                        <div class="col-6">
+                                            <input type="date" #FECHA="ngModel" name="FECHA" [(ngModel)]="medidor.FECHA" placeholder="Ingrese su FECHA">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-password-input" class="col-6 col-form-label">Serie medidor:</label>
+                                        <div class="col-6">
+                                            <input type="text" #SERIE="ngModel" name="SERIE" [(ngModel)]="medidor.SERIE" placeholder="Ingrese su SERIE">
+                                        </div>
+                                    </div>
+                                </div> 
+                                <input type="button" name="previous" class="previous action-button-previous" value="Atras" />
+                                <input type="submit" name="make_payment" class="next action-button" value="Confirmar" [disabled]="!formAddUsers.form.valid"/>
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-card">
+                                    <h2 class="fs-title text-center">Registro exitoso !</h2> <br><br>
+                                    <div class="row justify-content-center">
+                                        <div class="col-3"> 
+                                            <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image"> 
+                                        </div>
+                                    </div> <br><br>
+                                    <div class="row justify-content-center">
+                                        <div class="col-7 text-center">
+                                            <h5>Registro se realizo correctamente</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

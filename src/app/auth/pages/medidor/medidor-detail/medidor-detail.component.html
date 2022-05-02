@@ -1,0 +1,861 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'user'; then user"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Medidor</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Factura por cobrar</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#otrasfacturas" role="tab">Historial factura de multas</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#historial" role="tab">Historial factura consumo</a> </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Detalle medidor</h4>
+                            </div>
+                            <div class="card-body pt-2 row">
+                                <div class="col-md-4">
+                                    <address *ngIf="usuario_dato">
+                                        <h3><b class="text-danger">
+                                        	{{usuario_dato.NOMBRES}} {{usuario_dato.APELLIDOS}}</b>
+                                        </h3>
+                                        <iframe src="" id="order_print" type="application/pdf" class="d-none"></iframe>
+                                        <h4 class="font-bold">{{usuario_dato.APADOSN}}</h4>
+                                        <p class="text-muted m-l-5">
+                                        	Sector: {{usuario_dato.SECTOR}},
+                                            <br/> Direccion: {{usuario_dato.DIRECCION}},
+                                            <br/> Telf /Cel : 
+                                            <span>{{usuario_dato.TELEFONO}}</span> <span>{{usuario_dato.CELULAR}}</span>,
+                                            <br/> Referencia: {{usuario_dato.REFERENCIA}},
+                                            <br/> Estado Usuario: 
+                                            <span class="badge badge-success" *ngIf="usuario_dato.ESTADO==1">
+                                            	Activo
+                                            </span>
+                                            <span class="badge badge-danger" *ngIf="usuario_dato.ESTADO==0">
+                                            	Inactivo
+                                            </span>
+                                            <span class="badge badge-dark" *ngIf="usuario_dato.ESTADO!=0&&usuario_dato.ESTADO!=1">
+                                            	No disponible
+                                            </span>
+                                        </p>
+                                    </address>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="profiletimeline">
+                                        <div class="sl-item">
+                                            <div class="sl-right">
+                                            	<address *ngIf="medidor">
+    			                                    <h3>Codigo medidor: {{medidor.CODIGO}}</h3>
+    			                                    <h4 class="font-bold">
+    			                                    	Estado: 
+    			                                    	<span *ngIf="medidor.ESTADO=='ACTIVO'" class="badge badge-success">
+    			                                    		ACTIVO
+    			                                    	</span>
+    			                                    	<span *ngIf="medidor.ESTADO=='INACTIVO'" class="badge badge-danger">
+    			                                    		INACTIVO
+    			                                    	</span>
+    			                                    	<span *ngIf="medidor.ESTADO!='ACTIVO'&&medidor.ESTADO!='INACTIVO'" class="badge badge-dark">
+    			                                    		SIN ESPECIFICAR
+    			                                    	</span>
+    			                                    </h4>
+    			                                </address>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2 row">
+                            	<div class="col-md-12">
+                                    <hr>
+    	                        	<h3><b class="text-danger">
+    	                            	Historial Consumo</b>
+    	                            </h3>
+                                    <h5>Grafica del consumo</h5>
+                                    <hr>
+                                    <h3>Historial de consumomos mensual</h3>
+                                    <span>
+                                        Por cobrar 
+                                        <i class="fa fa-circle text-danger"></i>
+                                    </span>
+                                    <span>
+                                        Cobrardos
+                                        <i class="fa fa-circle text-success"></i>
+                                    </span>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="bar">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="doughnut">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--second tab-->
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de facturas</h4>
+                            </div>
+                            <div class="card-body" *ngIf="!this.temp_var">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>No tiene facturas de consumos pendientes por pagar</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" *ngIf="this.temp_var">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>Lista de facturas por pagar <strong>pendientes</strong></h3>
+                                            <div class="table-responsive p-0">
+                                                <form [formGroup]="facturasForm">
+                                                    <div formArrayName="listafacturas">
+                                                        <table class="table table-hover" *ngIf="this.temp_var">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Mes</th>
+                                                                    <th>Lect. Anterior</th>
+                                                                    <th>Lect. Actual</th>
+                                                                    <th>Alcantarillado</th>
+                                                                    <th>Consumo <small>m3</small></th>
+                                                                    <th>Exceso m3</th>
+                                                                    <th>Exceso $</th>
+                                                                    <th>Subtotal</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let us of listafacturas.controls;let i = index" id="fila{{i}}">
+                                                                    <td>
+                                                                        {{ us.value.ANIOMES }}
+                                                                    </td>
+                                                                    <td>{{ us.value.MEDIDAANT}}</td>
+                                                                    <td>{{ us.value.MEDIDAACT}}</td>
+                                                                    <td>{{ us.value.ALCANTARRILLADO | currency}}</td>
+                                                                    <td>
+                                                                        {{ us.value.CONSUMO}} 
+                                                                        <small class="text-success">(m3)</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ us.value.MEDEXCEDIDO}} 
+                                                                        <small class="text-success">(m3)</small>
+                                                                    </td>
+                                                                    <td>{{ us.value.TAREXCEDIDO | currency}}</td>
+                                                                    <td>
+                                                                        {{ us.value.SUBTOTAL+us.value.APORTEMINGA+us.value.ALCANTARRILLADO | currency}} 
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ us.value.TOTAL | currency}}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- Column -->
+                                            <hr>
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="pull-right m-t-30 text-right">
+                                                            <p *ngIf="subtotal||subtotal==0">
+                                                                SUBTOTAL : {{ subtotal | currency}} 
+                                                            </p>
+                                                            <p *ngIf="iva||iva==0">
+                                                                IVA (12%) : {{ iva| currency }} 
+                                                            </p>
+                                                            <p *ngIf="tarexcedido||tarexcedido==0">
+                                                                TAR EXCEDIDO : {{ tarexcedido| currency }} 
+                                                            </p>
+                                                            <p *ngIf="alcantarillado||alcantarillado==0">
+                                                                ALCANTARILLADO : {{ alcantarillado| currency }} 
+                                                            </p>
+                                                            <hr>
+                                                            <h3 *ngIf="total||total==0">
+                                                                <b>TOTAL :</b> {{ total| currency }} 
+                                                            </h3>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <hr>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--thirdth tab-->
+                    <div class="tab-pane" id="otrasfacturas" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Historial de facturas cobradas de Asambleas/Mingas</h4>
+                            </div>
+                            <div class="card-body col-md-12">
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover" *ngIf="this.var_ultimospagos_asistencia">
+                                        <thead>
+                                            <tr>
+                                                <th>Nº Comprobante</th>
+                                                <th>Tipo</th>
+                                                <th>Fecha</th>
+                                                <th>Lugar</th>
+                                                <th>Descripcion</th>
+                                                <th>Fecha Emision</th>
+                                                <th>Total</th>
+                                                <th>Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let us of this.ultimospagos_asistencia; let i =index">
+                                                <td>{{ us.NUMFACTURA}}</td>
+                                                <td>{{ us.asistencia.planificacion.TIPOPLANIFICACION}}</td>
+                                                <td>{{ us.asistencia.planificacion.FECHA}}</td>
+                                                <td>{{ us.asistencia.planificacion.LUGAR}} </td>
+                                                <td>{{ us.asistencia.planificacion.DESCRIPCION}} </td>
+                                                <td>{{ us.FECHAPAGO}} </td>
+                                                <td>{{ us.TOTAL | currency}}</td>
+
+                                                <td class="overflow-hidden">
+                                                    <div ngbDropdown container="body">
+                                                        <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                                        <div ngbDropdownMenu>
+                                                            <!-- <a ngbDropdownItem class="btn" 
+                                                            (click)="openVerModalUsers(verCliente,us)" title="Ver factura">
+                                                                Ver factura <i class="fa fa-eye"></i>
+                                                            </a> -->
+                                                            <a ngbDropdownItem class="btn" 
+                                                             title="Enviar correo">
+                                                                Enviar al correo<i class="fa fa-envelope-o"></i>
+                                                            </a>
+                                                           <!--  <a ngbDropdownItem class="btn"
+                                                            (click)="verFacturaIdPDF(us.NUMFACTURA)" title="Imprimir factura">
+                                                                Imprimir factura normal <i class="fa fa-print"></i>
+                                                            </a> -->
+                                                            <a ngbDropdownItem class="btn"
+                                                            (click)="verRealizarPagoFacturaAsistenciaTicket(us.NUMFACTURA)" title="Imprimir Ticket">
+                                                                Imprimir factura ticket <i class="fa fa-ticket"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                           
+                            </div>
+                        </div>
+                    </div>
+                    <!--fourth tab-->
+                    <div class="tab-pane" id="historial" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Historial facturas cobradas</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-12">
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover" *ngIf="this.var_ultimospagos">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nº Factura</th>
+                                                    <th>Meses cobrados</th>
+                                                    <th>Reconexion</th>
+                                                    <th>Fecha Emision</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Iva</th>
+                                                    <th>Total</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let us of this.ultimospagos; let i =index">
+                                                    <td>{{ us.NUMFACTURA}}</td>
+                                                    <td><span *ngIf="us.detallefactura">{{ us.detallefactura.length}}</span></td>
+                                                    <td>
+                                                        <span *ngIf="us.otrospagos.length>0">
+                                                            {{ us.otrospagos[0].TOTAL | currency}}
+                                                        </span>
+                                                        <span *ngIf="us.otrospagos.length==0" class="text-info">
+                                                            NO
+                                                        </span>
+                                                    </td>
+                                                    <td>{{ us.FECHAEMISION}}</td>
+                                                    <td>{{ us.SUBTOTAL | currency}}</td>
+                                                    <td>{{ us.IVA | currency}}</td>
+                                                    <td>{{ us.TOTAL | currency}}</td>
+
+                                                    <td class="overflow-hidden">
+                                                        <div ngbDropdown container="body">
+                                                            <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                                            <div ngbDropdownMenu>
+                                                                <!-- <a ngbDropdownItem class="btn" 
+                                                                (click)="openVerModalUsers(verCliente,us)" title="Ver factura">
+                                                                    Ver factura <i class="fa fa-eye"></i>
+                                                                </a> -->
+                                                                <a ngbDropdownItem class="btn" 
+                                                                 title="Enviar correo">
+                                                                    Enviar al correo<i class="fa fa-envelope-o"></i>
+                                                                </a>
+                                                                <a ngbDropdownItem class="btn"
+                                                                (click)="verFacturaIdPDF(us.NUMFACTURA)" title="Imprimir factura">
+                                                                    Imprimir factura normal <i class="fa fa-print"></i>
+                                                                </a>
+                                                                <a ngbDropdownItem class="btn"
+                                                                (click)="verFacturaIdPDFTicket(us.NUMFACTURA)" title="Imprimir Ticket">
+                                                                    Imprimir factura ticket <i class="fa fa-ticket"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #operador>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Medidor</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#historial" role="tab">Historial Consumo</a> </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Detalle medidor</h4>
+                            </div>
+                            <div class="card-body pt-2 row">
+                                <div class="col-md-4">
+                                    <address *ngIf="usuario_dato">
+                                        <h3><b class="text-danger">
+                                            {{usuario_dato.NOMBRES}} {{usuario_dato.APELLIDOS}}</b>
+                                        </h3>
+                                        <iframe src="" id="order_print" type="application/pdf" class="d-none"></iframe>
+                                        <h4 class="font-bold">{{usuario_dato.APADOSN}}</h4>
+                                        <p class="text-muted m-l-5">
+                                            Sector: {{usuario_dato.SECTOR}},
+                                            <br/> Direccion: {{usuario_dato.DIRECCION}},
+                                            <br/> Telf /Cel : 
+                                            <span>{{usuario_dato.TELEFONO}}</span> <span>{{usuario_dato.CELULAR}}</span>,
+                                            <br/> Referencia: {{usuario_dato.REFERENCIA}},
+                                            <br/> Estado Usuario: 
+                                            <span class="badge badge-success" *ngIf="usuario_dato.ESTADO==1">
+                                                Activo
+                                            </span>
+                                            <span class="badge badge-danger" *ngIf="usuario_dato.ESTADO==0">
+                                                Inactivo
+                                            </span>
+                                            <span class="badge badge-dark" *ngIf="usuario_dato.ESTADO!=0&&usuario_dato.ESTADO!=1">
+                                                No disponible
+                                            </span>
+                                        </p>
+                                    </address>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="profiletimeline">
+                                        <div class="sl-item">
+                                            <div class="sl-right">
+                                                <address *ngIf="medidor">
+                                                    <h3>Numero medidor: {{medidor.NUMMEDIDOR}}</h3>
+                                                    <h4 class="font-bold">
+                                                        Estado: 
+                                                        <span *ngIf="medidor.ESTADO=='ACTIVO'" class="badge badge-success">
+                                                            ACTIVO
+                                                        </span>
+                                                        <span *ngIf="medidor.ESTADO=='INACTIVO'" class="badge badge-danger">
+                                                            INACTIVO
+                                                        </span>
+                                                        <span *ngIf="medidor.ESTADO!='ACTIVO'&&medidor.ESTADO!='INACTIVO'" class="badge badge-dark">
+                                                            SIN ESPECIFICAR
+                                                        </span>
+                                                    </h4>
+                                                </address>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2 row">
+                                <div class="col-md-12">
+                                    <hr>
+                                    <h3><b class="text-danger">
+                                        Historial Consumo</b>
+                                    </h3>
+                                    <h5>Grafica del consumo</h5>
+                                    <hr>
+                                    <h3>Historial de consumomos mensual</h3>
+                                    <span>
+                                        Por cobrar 
+                                        <i class="fa fa-circle text-danger"></i>
+                                    </span>
+                                    <span>
+                                        Cobrardos
+                                        <i class="fa fa-circle text-success"></i>
+                                    </span>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="bar">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="doughnut">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="historial" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Historial consumo</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-12">
+                                    <div class="card-body table-responsive p-0">
+                                        <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.var_ultimospagos">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nº Factura</th>
+                                                    <th>Fecha</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Iva</th>
+                                                    <th>Total</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let us of this.ultimospagos; let i =index">
+                                                    <td>{{ us.NUMFACTURA}}</td>
+                                                    <td>{{ us.FECHAEMISION}}</td>
+                                                    <td>{{ us.SUBTOTAL}}</td>
+                                                    <td>{{ us.IVA}}</td>
+                                                    <td>{{ us.TOTAL}}</td>
+
+                                                    <td>
+                                                        <a (click)="verFacturaIdPDF(us.NUMFACTURA)" class="btn btn-outline-danger btn-sm" title="Imprimir factura">
+                                                            <i class="fa fa-print"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #user>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Medidor</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Factura por cobrar</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#otrasfacturas" role="tab">Otras facturas por cobrar</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#historial" role="tab">Historial factura</a> </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Detalle medidor</h4>
+                            </div>
+                            <div class="card-body pt-2 row">
+                                <div class="col-md-4">
+                                    <address *ngIf="usuario_dato">
+                                        <h3><b class="text-danger">
+                                            {{usuario_dato.NOMBRES}} {{usuario_dato.APELLIDOS}}</b>
+                                        </h3>
+                                        <p class="text-muted m-l-5">
+                                            Sector: {{usuario_dato.SECTOR}},
+                                            <br/> Direccion: {{usuario_dato.DIRECCION}},
+                                            <br/> Telf /Cel : 
+                                            <span>{{usuario_dato.TELEFONO}}</span> <span>{{usuario_dato.CELULAR}}</span>,
+                                            <br/> Referencia: {{usuario_dato.REFERENCIA}},
+                                            <br/> Estado Usuario: 
+                                            <span class="badge badge-success" *ngIf="usuario_dato.ESTADO==1">
+                                                Activo
+                                            </span>
+                                            <span class="badge badge-danger" *ngIf="usuario_dato.ESTADO==0">
+                                                Inactivo
+                                            </span>
+                                            <span class="badge badge-dark" *ngIf="usuario_dato.ESTADO!=0&&usuario_dato.ESTADO!=1">
+                                                No disponible
+                                            </span>
+                                        </p>
+                                    </address>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="profiletimeline">
+                                        <div class="sl-item">
+                                            <div class="sl-right">
+                                                <address *ngIf="medidor">
+                                                    <h3>Codigo medidor: {{medidor.CODIGO}}</h3>
+                                                    <h4 class="font-bold">
+                                                        Estado: 
+                                                        <span *ngIf="medidor.ESTADO=='ACTIVO'" class="badge badge-success">
+                                                            ACTIVO
+                                                        </span>
+                                                        <span *ngIf="medidor.ESTADO=='INACTIVO'" class="badge badge-danger">
+                                                            INACTIVO
+                                                        </span>
+                                                        <span *ngIf="medidor.ESTADO!='ACTIVO'&&medidor.ESTADO!='INACTIVO'" class="badge badge-dark">
+                                                            SIN ESPECIFICAR
+                                                        </span>
+                                                    </h4>
+                                                </address>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-2 row">
+                                <div class="col-md-12">
+                                    <hr>
+                                    <h3><b class="text-danger">
+                                        Historial Consumo</b>
+                                    </h3>
+                                    <h5>Grafica del consumo</h5>
+                                    <hr>
+                                    <h3>Historial de consumomos mensual</h3>
+                                    <span>
+                                        Por cobrar 
+                                        <i class="fa fa-circle text-danger"></i>
+                                    </span>
+                                    <span>
+                                        Cobrardos
+                                        <i class="fa fa-circle text-success"></i>
+                                    </span>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="bar">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="display: block;">
+                                                        <canvas baseChart
+                                                        [data]="doughnutChartData"
+                                                        [labels]="doughnutChartLabels"
+                                                        [colors]="colors"
+                                                        chartType="doughnut">
+                                                        </canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--second tab-->
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de facturas</h4>
+                            </div>
+                            <div class="card-body" *ngIf="!this.temp_var">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>No tiene facturas de consumos pendientes por pagar</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" *ngIf="this.temp_var">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>Lista de facturas por pagar <strong>pendientes</strong></h3>
+                                            <div class="table-responsive p-0">
+                                                <form [formGroup]="facturasForm">
+                                                    <div formArrayName="listafacturas">
+                                                        <table class="table table-hover" *ngIf="this.temp_var">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Mes</th>
+                                                                    <th>Lect. Anterior</th>
+                                                                    <th>Lect. Actual</th>
+                                                                    <th>Alcantarillado</th>
+                                                                    <th>Consumo <small>m3</small></th>
+                                                                    <th>Exceso m3</th>
+                                                                    <th>Exceso $</th>
+                                                                    <th>Subtotal</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let us of listafacturas.controls;let i = index" id="fila{{i}}">
+                                                                    <td>
+                                                                        {{ us.value.ANIOMES }}
+                                                                    </td>
+                                                                    <td>{{ us.value.MEDIDAANT}}</td>
+                                                                    <td>{{ us.value.MEDIDAACT}}</td>
+                                                                    <td>{{ us.value.ALCANTARRILLADO | currency}}</td>
+                                                                    <td>
+                                                                        {{ us.value.CONSUMO}} 
+                                                                        <small class="text-success">(m3)</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ us.value.MEDEXCEDIDO}} 
+                                                                        <small class="text-success">(m3)</small>
+                                                                    </td>
+                                                                    <td>{{ us.value.TAREXCEDIDO | currency}}</td>
+                                                                    <td>
+                                                                        {{ us.value.SUBTOTAL+us.value.APORTEMINGA+us.value.ALCANTARRILLADO | currency}} 
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ us.value.TOTAL | currency}}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- Column -->
+                                            <hr>
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="pull-right m-t-30 text-right">
+                                                            <p *ngIf="subtotal||subtotal==0">
+                                                                SUBTOTAL : {{ subtotal | currency}} 
+                                                            </p>
+                                                            <p *ngIf="iva||iva==0">
+                                                                IVA (12%) : {{ iva| currency }} 
+                                                            </p>
+                                                            <p *ngIf="tarexcedido||tarexcedido==0">
+                                                                TAR EXCEDIDO : {{ tarexcedido| currency }} 
+                                                            </p>
+                                                            <p *ngIf="alcantarillado||alcantarillado==0">
+                                                                ALCANTARILLADO : {{ alcantarillado| currency }} 
+                                                            </p>
+                                                            <hr>
+                                                            <h3 *ngIf="total||total==0">
+                                                                <b>TOTAL :</b> {{ total| currency }} 
+                                                            </h3>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <hr>
+                                                        <div class="text-right">
+                                                            <button id="print" class="btn btn-primary" type="button"> <span><i class="fa fa-print"></i> Imprimir</span> </button> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <!--thirdth tab-->
+                    <div class="tab-pane" id="otrasfacturas" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Historial de facturas cobradas de Asambleas/Mingas</h4>
+                            </div>
+                            <div class="card-body col-md-12">
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover" *ngIf="this.var_ultimospagos_asistencia">
+                                        <thead>
+                                            <tr>
+                                                <th>Nº Comprobante</th>
+                                                <th>Tipo</th>
+                                                <th>Fecha</th>
+                                                <th>Lugar</th>
+                                                <th>Descripcion</th>
+                                                <th>Fecha Emision</th>
+                                                <th>Total</th>
+                                                <th>Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let us of this.ultimospagos_asistencia; let i =index">
+                                                <td>{{ us.NUMFACTURA}}</td>
+                                                <td>{{ us.asistencia.planificacion.TIPOPLANIFICACION}}</td>
+                                                <td>{{ us.asistencia.planificacion.FECHA}}</td>
+                                                <td>{{ us.asistencia.planificacion.LUGAR}} </td>
+                                                <td>{{ us.asistencia.planificacion.DESCRIPCION}} </td>
+                                                <td>{{ us.FECHAPAGO}} </td>
+                                                <td>{{ us.TOTAL | currency}}</td>
+
+                                                <td class="overflow-hidden">
+                                                    <div ngbDropdown container="body">
+                                                        <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                                        <div ngbDropdownMenu>
+                                                            <!-- <a ngbDropdownItem class="btn" 
+                                                            (click)="openVerModalUsers(verCliente,us)" title="Ver factura">
+                                                                Ver factura <i class="fa fa-eye"></i>
+                                                            </a> -->
+                                                            <a ngbDropdownItem class="btn" 
+                                                             title="Enviar correo">
+                                                                Enviar al correo<i class="fa fa-envelope-o"></i>
+                                                            </a>
+                                                           <!--  <a ngbDropdownItem class="btn"
+                                                            (click)="verFacturaIdPDF(us.NUMFACTURA)" title="Imprimir factura">
+                                                                Imprimir factura normal <i class="fa fa-print"></i>
+                                                            </a> -->
+                                                            <a ngbDropdownItem class="btn"
+                                                            (click)="verRealizarPagoFacturaAsistenciaTicket(us.NUMFACTURA)" title="Imprimir Ticket">
+                                                                Imprimir factura ticket <i class="fa fa-ticket"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                           
+                            </div>
+                        </div>
+                    </div>
+                    <!--fourth tab-->
+                    <div class="tab-pane" id="historial" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Historial facturas cobradas</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-12">
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover" *ngIf="this.var_ultimospagos">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nº Factura</th>
+                                                    <th>Meses cobrados</th>
+                                                    <th>Reconexion</th>
+                                                    <th>Fecha Emision</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Iva</th>
+                                                    <th>Total</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let us of this.ultimospagos; let i =index">
+                                                    <td>{{ us.NUMFACTURA}}</td>
+                                                    <td><span *ngIf="us.detallefactura">{{ us.detallefactura.length}}</span></td>
+                                                    <td>
+                                                        <span *ngIf="us.otrospagos.length>0">
+                                                            {{ us.otrospagos[0].TOTAL | currency}}
+                                                        </span>
+                                                        <span *ngIf="us.otrospagos.length==0" class="text-info">
+                                                            NO
+                                                        </span>
+                                                    </td>
+                                                    <td>{{ us.FECHAEMISION}}</td>
+                                                    <td>{{ us.SUBTOTAL | currency}}</td>
+                                                    <td>{{ us.IVA | currency}}</td>
+                                                    <td>{{ us.TOTAL | currency}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+

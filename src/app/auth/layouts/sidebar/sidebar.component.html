@@ -1,0 +1,363 @@
+<!-- ============================================================== -->
+<!-- Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+<aside class="left-sidebar">
+  <!-- Sidebar scroll-->
+  <div class="scroll-sidebar">
+      <!-- Sidebar navigation-->
+      <nav class="sidebar-nav">
+          <ul id="sidebarnav">
+              <li class="user-profile">
+                  <a class="has-arrow waves-effect waves-dark" (click)="collapse.toggle()" [attr.aria-expanded]="!isCollapsedProfile" aria-controls="collapseExample">
+                    <img src="./assets/images/users/profile.png" alt="user" />
+                    <small class="hide-menu" *ngIf="identity">{{identity.NOMBRES}} {{identity.APELLIDOS}}</small><br>
+                    <small class="hide-menu" *ngIf="nombre_rol">
+                      <strong class="text-danger">Usuario: </strong> {{nombre_rol}} <i class="fa fa-circle float-right text-success"></i>
+                    </small>
+                  </a>
+                  <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedProfile" class="collapse">
+                      <li><a href="javascript:void()">Mi perfil </a></li>
+                      <li><a routerLink="account-settings">Configuracion</a></li>
+                  </ul>
+              </li>
+              <li class="nav-devider"></li>
+
+              <li>
+                <a 
+                [routerLink]="['/dashboard']"
+                >
+                  <i class="mdi mdi-gauge"></i>
+                  <span class="hide-menu">INICIO</span>
+                </a>
+              </li>
+              <li class="nav-small-cap">AGUA POTABLE</li>
+
+              <li *ngIf="menuItems[1]&&roles_administrativos!='user'">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[1].path}" 
+                [attr.aria-expanded]="!isCollapsedUsers" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-account-multiple"></i>
+                  <span class="hide-menu">{{ menuItems[1].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[1].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedUsers">
+                    <li *ngFor="let subitem of menuItems[1].submenu">
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+
+              <li *ngIf="menuItems[2]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[2].path}" 
+                [attr.aria-expanded]="!isCollapsedMedidor" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-compass"></i>
+                  <span class="hide-menu">{{ menuItems[2].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[2].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedMedidor">
+                    <li *ngFor="let subitem of menuItems[2].submenu">
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li *ngIf="menuItems[3]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[3].path}" 
+                [attr.aria-expanded]="!isCollapsedFactura" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-cash-multiple"></i>
+                  <span class="hide-menu">{{ menuItems[3].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[3].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedFactura">
+                    <li 
+                    *ngFor="let subitem of menuItems[3].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li *ngIf="menuItems[7]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[7].path}" 
+                [attr.aria-expanded]="!isCollapsedPlanificacion" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-airplay"></i>
+                  <span class="hide-menu">{{ menuItems[7].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[7].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedPlanificacion">
+                    <li 
+                    *ngFor="let subitem of menuItems[7].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                AGUA SOBRANTE
+              </li>
+              <li *ngIf="menuItems[8]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[8].path}" 
+                [attr.aria-expanded]="!isCollapsedAguasobrante" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-water-pump"></i>
+                  <span class="hide-menu">{{ menuItems[8].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[8].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedAguasobrante">
+                    <li 
+                    *ngFor="let subitem of menuItems[8].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                AGUA GANADERIA
+              </li>
+              <li *ngIf="menuItems[9]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[9].path}" 
+                [attr.aria-expanded]="!isCollapsedAguaganaderia" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-cow"></i>
+                  <span class="hide-menu">{{ menuItems[9].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[9].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedAguaganaderia">
+                    <li 
+                    *ngFor="let subitem of menuItems[9].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                AGUA PESILLO
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                COMPRAS
+              </li>
+              <!-- COMPRAS - PROVEEDOR -->
+              <li *ngIf="menuItems[4]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[4].path}" 
+                [attr.aria-expanded]="!isCollapsedCompras" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-cart-outline"></i>
+                  <span class="hide-menu">{{ menuItems[4].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[4].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedCompras">
+                    <li 
+                    *ngFor="let subitem of menuItems[4].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                VENTAS
+              </li>
+
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                FINANZAS
+              </li>
+
+              <li *ngIf="menuItems[5]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[5].path}" 
+                [attr.aria-expanded]="!isCollapsedContabilidad" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-chart-bar"></i>
+                  <span class="hide-menu">{{ menuItems[5].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[5].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedContabilidad">
+                    <li 
+                    *ngFor="let subitem of menuItems[5].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                CONFIGURACIÓN
+              </li>
+              <li *ngIf="menuItems[6]">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == menuItems[6].path}" 
+                [attr.aria-expanded]="!isCollapsedConfiguracion" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-settings"></i>
+                  <span class="hide-menu">{{ menuItems[6].titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ menuItems[6].submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedConfiguracion">
+                    <li 
+                    *ngFor="let subitem of menuItems[6].submenu"
+                    >
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li>
+
+              <li class="nav-small-cap" *ngIf="roles_administrativos=='admin'||roles_administrativos=='cobrador'">
+                <img src="./assets/img/logo2.png" alt="user" style="width:186px" />
+              </li>
+
+
+              <!-- <li>
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                
+                [attr.aria-expanded]="!isCollapsedCompras" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-gauge"></i>
+                  <span class="hide-menu">Compras
+                    <span class="label label-rouded label-themecolor pull-right">1</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedCompras">
+                    <li>
+                      <a
+                      [routerLink]="['/compras']"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        Gesionar Compras
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                      [routerLink]="['/proveedores']"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        Gestionar Proveedores
+                      </a>
+                    </li>
+                </ul>
+              </li> -->
+              <!-- <li *ngFor="let item of menuItems">
+                <a class="has-arrow waves-effect waves-dark" 
+                (click)="collapse.toggle()" 
+                [ngClass]="{'active':path == item.path}" 
+                [attr.aria-expanded]="!isCollapsed" 
+                aria-controls="collapseExample"
+                >
+                  <i class="mdi mdi-gauge"></i>
+                  <span class="hide-menu">{{ item.titulo }}
+                    <span class="label label-rouded label-themecolor pull-right">{{ item.submenu.length }}</span>
+                  </span>
+                </a>
+                <ul #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+                    <li *ngFor="let subitem of item.submenu">
+                      <a
+                      [routerLink]="subitem.url"
+                      [routerLinkActive]="['active']"
+                      [routerLinkActiveOptions]="{exact:true}"
+                      >
+                        {{ subitem.titulo }}
+                      </a>
+                    </li>
+                </ul>
+              </li> -->
+
+
+          </ul>
+      </nav>
+      <!-- End Sidebar navigation -->
+  </div>
+  <!-- End Sidebar scroll-->
+</aside>
+<!-- ============================================================== -->
+<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->

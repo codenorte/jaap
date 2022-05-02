@@ -1,0 +1,61 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+    	<div class="col-md-12">
+			<div class="card pt-2">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">Registro de transpaso de domicilio</h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-12">
+                    	<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoEditDomicilio" aria-expanded="false">
+				            Información <i class="fa fa-info"></i>
+				        </button>
+				        <div id="acordion">
+		                    <div id="collapseInfoEditDomicilio" class="panel-collapse in collapse" style="">
+		                        <div class="jumbotron jumbotron-fluid p-2">
+		                            <h5>Informacion</h5>
+		                            <p>En esta seccion usted podrá realizar el registro de cambio de domicilio, se generará una factura por el trabajo realizado tanto de materiales utilizados como tambien el costo de mano de obra.</p>
+		                        </div>
+		                    </div>
+		                </div>
+			            
+			        </div>
+                </div>
+	            <div class="col-md-9" *ngIf="datos_usuario">
+	            	<div class="row">
+	            		<div class="col-md-6">
+	            			<h4>Datos del usuario</h4>
+	            			<p>
+	            				<span><strong>Nombres: </strong> {{datos_usuario.users.NOMBRES}} {{datos_usuario.users.APELLIDOS}} </span><br>
+	            				<span><strong>Apodo: </strong> {{datos_usuario.users.APADOSN}}</span><br>
+	            				<span><strong>Sector: </strong> {{datos_usuario.users.SECTOR}}</span><br>
+	            			</p>
+
+	            		</div>
+	            		<div class="col-md-6">
+	            			<span><strong>CI / RUC: </strong> {{datos_usuario.users.RUCCI}}</span><br>
+	            			<span><strong>Direccion: </strong> {{datos_usuario.users.DIRECCION}}</span><br>
+	            			<span><strong>Referencia: </strong> {{datos_usuario.users.REFERENCIA}}</span><br>
+	                        <span *ngIf="datos_usuario.ESTADO=='ACTIVO'">
+	                            <h4>
+	                                <strong class="text-success">Estado: MEDIDOR ACTIVO</strong>
+	                            </h4>
+	                        </span>
+	                        <span *ngIf="datos_usuario.ESTADO=='INACTIVO'">
+	                            <h4>
+	                                <strong class="text-danger">Estado: MEDIDOR INACTIVO</strong>
+	                            </h4>
+	                        </span>
+	            			<h3 *ngIf="datos_usuario.CODIGO">
+	                            <strong class="text-success">Codigo Medidor: {{datos_usuario.CODIGO}}</strong>
+	                        </h3>
+	                        
+	            		</div>
+	            	</div>
+	            </div>
+            </div>
+    	</div>      
+    </div>
+</ng-template>

@@ -1,0 +1,265 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-12" *ngIf="!temp_var">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="temp_var">
+        	<div class="card">
+	            <div class="card-body">
+	            	<h2>Planificacion mensual de asambleas y mingas</h2>
+                    <p><strong>Info:</strong> En esta seccion usted podra crear un evento de MINGA o ASAMBLEA.</p>
+                    <p>Para editar un evento debe cumplir con las siguientes condiciones:</p>
+                    <ul>
+                        <li>El evento debe estar activo</li>
+                        <li>El evento no debe registrar ninguna asistencia</li>
+                    </ul>
+                    <p>Si no se cunmplen estas condiciones <strong>no se podra editar el evento</strong>.</p>
+	            	<br>
+	            	<button class="btn btn-primary btn-sm" (click)="crearPlanificacionModal(crearPlanificacion)" >Crear nueva planificacion <i class="fa fa-plus-circle"></i></button>
+	            	<hr>
+	            	<div *ngIf="temp_var">
+	            		<div class="card-body table-responsive pt-2">
+                            <table class="table table-hover" *ngIf="this.temp_var">
+                                <thead>
+                                    <tr>
+                                        <th>Nº</th>
+                                        <th>TIPO PLANIFICACION</th>
+                                        <th>LUGAR</th>
+                                        <th style="width: 8%;">FECHA</th>
+                                        <th>MULTA</th>
+                                        <th>DESCRIPCION</th>
+                                        <th>Usuarios registrados</th>
+                                        <th>Estado</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let us of this.lista_planificacion; let i =index">
+                                        <td>{{ i + 1}}</td>
+                                        <td>{{ us.TIPOPLANIFICACION}}</td>
+                                        <td>{{ us.LUGAR}}</td>
+                                        <td>{{ us.FECHA | date: 'mediumDate'}}</td>
+                                        <td>{{ us.VALORMULTA | currency}}</td>
+                                        <td>{{ us.DESCRIPCION}}</td>
+                                        <td>{{ us.asistencia_count}}</td>
+                                        <td>
+                                            <span *ngIf="us.estado==1">
+                                                <div class="chat-content">
+                                                    <div class="box bg-light-info">ACTIVO</div>
+                                                </div>
+                                            </span>
+                                            <span *ngIf="us.estado!=1">
+                                                <div class="chat-content">
+                                                    <div class="box bg-light-inverse">INACTIVO</div>
+                                                </div>
+                                            </span>
+                                        </td>
+                                        <td class="overflow-hidden">
+                                            <div ngbDropdown container="body">
+                                                <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                                <div ngbDropdownMenu>
+
+                                                    <a ngbDropdownItem class="btn"
+                                                    *ngIf="us.asistencia_count==0"
+                                                    (click)="editPlanificacionModal(editarPlanificacion,us)" title="Editar planificacion">
+                                                        Editar planificacion <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+                                                    <div class="dropdown-divider"></div>
+                                                    
+                                                    <a ngbDropdownItem
+                                                    [routerLink]="['/planificacion/planificacion-detail',us.IDPLANIFICACION]" title="Entrar para registrar asistencia">
+                                                        Entrar <i class="fa fa-arrow-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+	            	</div>
+	            </div>
+        	</div>
+        </div>
+    </div>
+</ng-template>
+
+
+<!--modals add planificacion-->
+<ng-template #crearPlanificacion let-modal>
+    <form role="form" #formRegistrarPlanificacion="ngForm" (ngSubmit)="createPlanificacion()">
+	    <div class="modal-header">
+	        <h4 class="modal-title" id="modal-basic-title">Registrar nueva planificacion</h4>
+	        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+	            <i class="fa fa-fw fa-question"></i>
+	        </button>
+	        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+	            <span aria-hidden="true">&times;</span>
+	        </button>
+	    </div>
+	    <div class="modal-body">
+	        <div class="row">
+	            <div class="col-12">
+	                <div id="acordion">
+	                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+	                        <div class="jumbotron jumbotron-fluid p-2">
+	                            <h5>Info</h5>
+	                            <p>En esta seccion usted puede registrar un nuevo evento.</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-12">
+	            	<div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> TIPO PLANIFICACION</span>
+                        <select 
+                        id="TIPOPLANIFICACION" 
+                        class="form-control form-control-sm"
+                        [(ngModel)]="planificacion.TIPOPLANIFICACION" 
+                        name="TIPOPLANIFICACION" required
+			        		>
+			                <option *ngFor="let g of tipo_plan" [value]="g.name"> {{g.name}} </option>
+			            </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> LUGAR</span>
+                        <input type="text" 
+                        #LUGAR="ngModel" 
+                        name="LUGAR" 
+                        [(ngModel)]="planificacion.LUGAR" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese LUGAR" 
+                        required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> FECHA</span>
+                        <input type="date" 
+                        #FECHA="ngModel" 
+                        name="FECHA" 
+                        [(ngModel)]="planificacion.FECHA" 
+                        class="form-control form-control-sm" 
+                        required
+                        >
+                    </div>
+	            	<div class="form-group">
+                        <span class="control-label">VALOR DE LA MULTA</span>
+                        <input type="number" #VALORMULTA="ngModel" name="VALORMULTA" [(ngModel)]="planificacion.VALORMULTA" class="form-control form-control-sm" placeholder="Ingrese valor de la multa" required>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">DESCRIPCION</span>
+                        <textarea #DESCRIPCION="ngModel" name="DESCRIPCION" [(ngModel)]="planificacion.DESCRIPCION" class="form-control form-control-sm" placeholder="Ingrese la descripcion de la planificacion">
+                        </textarea>
+                    </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button type="submit" 
+	        class="btn btn-outline-success float-right" 
+	        (click)="modal.close('guardar')"
+	        [disabled]="!formRegistrarPlanificacion.form.valid"
+	        >
+	        	<i class="fa fa-check"></i> GUARDAR
+	        </button>
+	        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+	        	CERRAR
+	        </button>
+	    </div>
+    </form>
+</ng-template>
+<!--fin modals add planificacion-->
+
+<!--modals edit planificacion-->
+<ng-template #editarPlanificacion let-modal>
+    <form role="form" #formEditarPlanificacion="ngForm" (ngSubmit)="editPlanificacion()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Registrar nueva planificacion</h4>
+            <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+                <i class="fa fa-fw fa-question"></i>
+            </button>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div id="acordion">
+                        <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                            <div class="jumbotron jumbotron-fluid p-2">
+                                <h5>Info</h5>
+                                <p>En esta seccion usted puede editar el evento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> TIPO PLANIFICACION</span>
+                        <select 
+                        id="TIPOPLANIFICACION" 
+                        class="form-control form-control-sm"
+                        [(ngModel)]="planificacion.TIPOPLANIFICACION" 
+                        name="TIPOPLANIFICACION" required
+                            >
+                            <option *ngFor="let g of tipo_plan" [value]="g.name"> {{g.name}} </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> LUGAR</span>
+                        <input type="text" 
+                        #LUGAR="ngModel" 
+                        name="LUGAR" 
+                        [(ngModel)]="planificacion.LUGAR" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese LUGAR" 
+                        required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> FECHA</span>
+                        <input type="date" 
+                        #FECHA="ngModel" 
+                        name="FECHA" 
+                        [(ngModel)]="planificacion.FECHA" 
+                        class="form-control form-control-sm" 
+                        required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">VALOR DE LA MULTA</span>
+                        <input type="number" #VALORMULTA="ngModel" name="VALORMULTA" [(ngModel)]="planificacion.VALORMULTA" class="form-control form-control-sm" placeholder="Ingrese valor de la multa" required>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">DESCRIPCION</span>
+                        <textarea #DESCRIPCION="ngModel" name="DESCRIPCION" [(ngModel)]="planificacion.DESCRIPCION" class="form-control form-control-sm" placeholder="Ingrese la descripcion de la planificacion">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" 
+            class="btn btn-outline-success float-right" 
+            (click)="modal.close('guardar')"
+            [disabled]="!formEditarPlanificacion.form.valid"
+            >
+                <i class="fa fa-check"></i> GUARDAR
+            </button>
+            <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+                CERRAR
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!--fin modals edit planificacion-->

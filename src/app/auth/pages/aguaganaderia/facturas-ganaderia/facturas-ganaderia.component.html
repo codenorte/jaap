@@ -1,0 +1,361 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-md-12 card pb-3">
+        	<h4>Búsqueda:</h4>
+        	<div class="row">
+        		<div class="col-md-3">
+		        	<div class="form-group">
+                        <button 
+                        class="btn btn-info btn-sm"
+                        (click)="getuseraguaganaderiaModal(allUserAguaganderia)"
+                        >
+                            Lista de usuarios <i class="fa fa-search"></i>
+                        </button>
+		            </div>
+        		</div>
+	            <div class="col-md-9" *ngIf="users">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Datos del usuario</h4>
+                            <p>
+                                <span><strong>Nombres: </strong> {{users.NOMBRES}} {{users.APELLIDOS}} </span><br>
+                                <span><strong>Apodo: </strong> {{users.APADOSN}}</span><br>
+                                <span><strong>Sector: </strong> {{users.SECTOR}}</span><br>
+                                <a class="btn btn-primary btn-sm"
+                                [routerLink]="['/aguaganaderia/aguaganaderia-detail',users.aguaganaderia[0].IDAGUAGANADERIA]"
+                                target="_blank" 
+                                >
+                                    Ver usuario <i class="fa fa-eye"></i>
+                                </a>
+                            </p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <span><strong>CI / RUC: </strong> {{users.RUCCI}}</span><br>
+                            <span><strong>Direccion: </strong> {{users.DIRECCION}}</span><br>
+                            <span><strong>Referencia: </strong> {{users.REFERENCIA}}</span><br>
+
+                            <span *ngIf="users.aguaganaderia[0].ESTADO==1">
+                                <strong>Estado: <span class="text-success"> USUARIO ACTIVO</span> </strong>
+                            </span>
+                            <span *ngIf="users.aguaganaderia[0].ESTADO==0">
+                                <strong>Estado: <span class="text-warning">USUARIO INACTIVO</span></strong>
+                            </span>
+                            <span *ngIf="users.aguaganaderia[0].ESTADO==2">
+                                <strong>Estado: <span class="text-danger">USUARIO SUSPENDIDO</span></strong>
+                            </span>
+                            <span *ngIf="users.aguaganaderia[0].ESTADO==3">
+                                <strong>Estado: <span class="text-danger">USUARIO REMOVIDO</span></strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </div>
+        <div class="col-12">
+            <div class="card table-responsive p-0">
+            	<div class="card-body" *ngIf="!this.temp_var">
+                    <div class="row">
+                        <div class="col-md-12">
+                        	<h4 *ngIf="message_error"> &nbsp;<b class="text-danger">Error: </b> &nbsp; &nbsp; &nbsp;
+	                            <small class="text-danger">{{message_error}}</small> 
+	                        </h4>
+                            <div class="p-20">
+                                <h3>No tiene facturas de agua ganaderia pendientes por pagar</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" *ngIf="this.temp_var">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="p-20">
+                                <h3>Lista de facturas por pagar <strong>pendientes</strong></h3>
+                                <div class="table-responsive p-0">
+                                    <form [formGroup]="facturasForm">
+                                        <div formArrayName="listafacturas">
+                                            <table class="table table-hover" *ngIf="this.temp_var">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="110"></th>
+                                                        <th>Mes</th>
+                                                        <th>Descripcion</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let us of listafacturas.controls;let i = index" id="fila{{i}}">
+                                                        <td>
+                                                            <span 
+                                                            *ngIf="this.listafactura_restar_tamanio-1==i&&
+                                                            this.listafactura_restar_tamanio-1>0"
+                                                            >
+                                                                <button class="btn btn-circle text-danger"
+                                                                (click)="removeItem(i)">
+                                                                    <i class="fa fa-minus-circle"></i>
+                                                                </button>
+                                                                <span 
+                                                                *ngIf="listafactura_restar_tamanio<listafactura_tamanio"
+                                                                >
+                                                                    <button 
+                                                                    class="btn btn-circle text-info"
+                                                                    (click)="addItem()">
+                                                                        <i class="fa fa-plus-circle"></i>
+                                                                    </button>
+                                                                </span>
+                                                            </span>
+
+                                                            <span 
+                                                            *ngIf="this.listafactura_restar_tamanio-1==0&&
+                                                            listafactura_tamanio>1"
+                                                            >
+                                                                <button 
+                                                                class="btn btn-circle text-info"
+                                                                (click)="addItem()">
+                                                                    <i class="fa fa-plus-circle"></i>
+                                                                </button>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {{ us.value.ANIOMES }}
+                                                        </td>
+                                                        <td>{{ us.value.OBSERVACION}}</td>
+                                                        <td>
+                                                            {{ us.value.TOTAL| currency}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Column -->
+                                <hr>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body row">
+                                            <div class="col-md-6 m-t-30">
+                                                
+                                            </div>
+                                            <div class="col-md-6 row">
+                                                <div class="col-md-12 m-t-30 text-right">
+                                                    <hr>
+                                                    <p *ngIf="subtotal||subtotal==0">
+                                                        SUBTOTAL : {{ subtotal | currency }} 
+                                                    </p>
+                                                    <p *ngIf="iva||iva==0">
+                                                        IVA (12%) : {{ iva | currency}} 
+                                                    </p>
+                                                    <hr>
+                                                    <h3 *ngIf="total||total==0">
+                                                        <b>TOTAL :</b> {{ total | currency}} 
+                                                    </h3>
+                                                </div>
+                                                <div class="col-md-12 text-right">
+                                                    <hr><br>
+                                                    <button *ngIf="ocultar_boton=='ocultar'"
+                                                    class="btn btn-danger" 
+                                                    type="button" 
+                                                    disabled
+                                                    >
+                                                        CARGANDO 
+                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                        <span class="sr-only">Loading...</span>
+                                                    </button>
+
+                                                    <button *ngIf="ocultar_boton!='ocultar'"
+                                                    class="btn btn-danger" 
+                                                    type="submit"
+                                                    (click)="openConfirmarPagoModal(confirmarPago)"
+                                                    >
+                                                        REALIZAR PAGO
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!--seleccionar todos los usuarios - users-medidor -->
+<ng-template #allUserAguaganderia let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Seleccionar usuario para facturar</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-12 m-b-30">
+                <p>
+                    <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-info"></i> Información
+                    </button>
+                </p>
+                <div class="collapse" id="collapseExample">
+                    Seleccione el usuario a facturar
+                </div>
+            </div>            
+            <div class="col-md-12">
+                <div class="card-body table-responsive p-0">
+                    <form class="form-group float-right">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">Buscar: </span>
+                            <input 
+                            type="text" 
+                            name="searchValue" 
+                            class="form-control" 
+                            [(ngModel)]="searchValue"
+                            (input)="eventoBuscar($event.target.value)"
+                            >
+                        </div>
+                    </form>
+                    <table class="table table-hover" *ngIf="this.temp_var_usuario_ganaderia">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>CI/RUC</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Apodo</th>
+                                <th>Sector</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let us of this.lista_usuarios| busquedausuariocliente: searchValue ;
+                            let i =index" (change)="eventoBuscar($event)">
+                                <td>{{ i + 1}}</td>
+                                <td>{{ us.RUCCI}}</td>
+                                <td>{{ us.NOMBRES}}</td>
+                                <td>{{ us.APELLIDOS}}</td>
+                                <td>{{ us.APADOSN}}</td>
+                                <td>{{ us.SECTOR}}</td>
+                                <td>
+                                    <a
+                                    class="btn btn-outline-secondary btn-sm" 
+                                    aria-label="Close" 
+                                    (click)="seleccionarUser(us);modal.close('Cancelar')"
+                                    >
+                                        Seleccionar usuario <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+	            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">CANCELAR</button>
+    </div>
+</ng-template>
+<!--fin seleccionar todos los usuarios - users-medidor -->
+
+<!--modals confirmar pago de la factura-->
+<ng-template #confirmarPago let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar Pago - Factura cliente </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <address *ngIf="users">
+                    <h5>
+                        {{users.NOMBRES}} {{users.APELLIDOS}}
+                    </h5>
+                    <h6 class="font-bold">{{users.APADOSN}}</h6>
+                    <p class="text-muted m-l-5">
+                        <span>
+                            Sector: {{users.SECTOR}},
+                        </span><br>
+                        <span *ngIf='users.REFERENCIA'>
+                            Referencia: {{users.REFERENCIA}},
+                        </span><br/>
+                        <span *ngIf='users.ESTADO'>
+                            Estado Usuario: 
+                            <span class="badge badge-success" *ngIf="users.ESTADO==1">
+                                Activo
+                            </span>
+                            <span class="badge badge-danger" *ngIf="users.ESTADO==0">
+                                Inactivo
+                            </span>
+                            <span class="badge badge-dark" *ngIf="users.ESTADO!=0&&users.ESTADO!=1">
+                                No disponible
+                            </span>
+                        </span> <br/> 
+                    </p>
+                </address>
+            </div>
+            <div class="col-md-12 row">
+                <div class="col-md-6">
+                    Meses por cobrar: <span *ngIf='this.listafacturas.value'> {{this.listafacturas.value.length }} </span>
+                </div>
+                <hr class="col-md-12">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th>Descripcion</th>
+                                <th><span  class="float-right">Total</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let us of this.listafacturas.value;let i = index">
+                                <td>
+                                    {{ us.ANIOMES }}
+                                </td>
+                                <td>{{ us.OBSERVACION}}</td>
+                                <td>
+                                    <span class="float-right">{{ us.TOTAL| currency}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <div *ngIf="array_totales">
+                        <span *ngIf="array_totales[0].subtotal||array_totales[0].subtotal==0">
+                            Subtotal: <span class="float-right">{{array_totales[0].subtotal | currency}}</span>
+                        </span><br>
+                        <span *ngIf="array_totales[0].iva||array_totales[0].iva==0">
+                            IVA: <span class="float-right">{{array_totales[0].iva | currency}}</span>
+                        </span><br>
+                    </div>
+                </div>
+            </div>
+            <hr class="col-md-12">
+            <div class="col-md-12">
+                <div *ngIf="array_totales">
+                    <h4 *ngIf="array_totales[0].total||array_totales[0].total==0" class="float-right">
+                        <strong>Total: {{array_totales[0].total | currency}}</strong>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success float-right" (click)="modal.close('realizarpago')">ACEPTAR</button>
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">CANCELAR</button>
+    </div>
+</ng-template>
+<!--fin modals confirmar pago de la factura-->

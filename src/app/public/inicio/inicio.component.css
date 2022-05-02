@@ -1,0 +1,9 @@
+.slider_text h3 {
+    color: #1F1F1F;
+    font-family: "Poppins", sans-serif;
+    font-size: 70px;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    font-weight: 300;
+}
+

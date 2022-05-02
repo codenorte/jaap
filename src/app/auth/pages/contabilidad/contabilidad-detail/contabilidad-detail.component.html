@@ -1,0 +1,496 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+    	<!-- 
+    	<div class="col-md-12">
+    		<div id="print">
+    			<div class="salto_pagina_anterior content">
+    				<div>Este elemento se imprimirá en la primera página.</div>
+    				<div class="img-content">
+    					<img src="https://www.online-image-editor.com/styles/2019/images/power_girl_editor.png">
+    				</div>
+    				<div class="observation">
+    					Lorem Ipsum dest adsdf adf asd f asdf asdf as dfa sdf asd fasd fas df asdf asd fa ds
+    				</div>
+    			</div>
+    			<div class="salto_pagina_anterior content">
+    				<div>Este elemento se imprimirá en la segunda página.</div>
+    				<div class="img-content">
+    					<img src="https://www.online-image-editor.com/styles/2019/images/power_girl_editor.png">
+    				</div>
+    				<div class="observation">
+    					Lorem Ipsum dest adsdf adf asd f asdf asdf as dfa sdf asd fasd fas df asdf asd fa ds
+    				</div>
+    			</div>
+    			<div class="salto_pagina_anterior content">
+    				<div>Este elemento se imprimirá en la tercera página.</div>
+    				<div class="img-content">
+    					<img src="https://www.online-image-editor.com/styles/2019/images/power_girl_editor.png">
+    				</div>
+    				<div class="observation">
+    					Lorem Ipsum dest adsdf adf asd f asdf asdf as dfa sdf asd fasd fas df asdf asd fa ds
+    				</div>
+    			</div>
+    		</div>
+
+    		<button (click)="print()">
+    			Print
+    		</button>
+
+    		<style>
+    			.content {
+    				height: 100vh;
+    				width: 100%;
+    				display: flex;
+    				flex-direction: column;
+    			}
+
+    			.img-content {
+    				flex: 1;
+    				display: flex;
+    				justify-content: center;
+    				align-items: center;
+    			}
+
+    			.observation {
+    				height: 150px;
+    				overflow: hidden;
+    				overflow-y: auto;
+    			}
+    		</style>
+    	</div>
+
+ -->
+        <div class="col-lg-12">
+            <div class="card">
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Consumo de Agua</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Agua Ganaderia</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#sobrante" role="tab">Agua Sobrante</a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                        	<div id="consumoAgua">
+	                            <div class="card-header bg-info">
+	                                <h4 class="m-b-0 text-white">Reporte de Consumo de Agua</h4>
+	                            </div>
+	                            <div class="row card-body">
+	                            	<div class="col-md-12 doNotPrint">
+			                            <h2 class="text-center pt-5 pb-5">Seleccione un rango de fecha para generar el reporte</h2>
+			                            <p><strong>Debe seleccionar un rango de fecha para generar el reporte</strong></p>
+	                            	</div>
+		                            <hr class="col-md-12 doNotPrint">
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>Fecha inicial</span>
+		                            	<select class="form-control"  id="inicial" class="col-md-9 form-control form-control-sm"
+		                            		(change)="getAllControlaniomesDescencenteInicioFin()"
+		                                    [(ngModel)]="fechabusqueda.inicial" name="inicial" required>
+		                                    <option *ngFor="let g of lista_controlaniomes" [ngValue]="g.id">{{g.aniomes}}</option>
+		                                </select>
+		                            </div>
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>Fecha fin</span>
+		                            	<select class="form-control"  id="fin" class="col-md-9 form-control form-control-sm"
+		                                    [(ngModel)]="fechabusqueda.fin" name="fin"
+		                                    (change)="seleccionFin($event)"
+		                                    >
+		                                    <option *ngFor="let g of lista_controlaniomes_desde" [ngValue]="g.id">{{g.aniomes}}</option>
+		                                </select>
+		                            </div>
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>&nbsp;&nbsp;</span><br>
+		                            	<button (click)="Buscar()" class="btn btn-primary btn-sm">Buscar <i class="fa fa-search"></i></button>
+		                            </div>
+		                            <hr class="col-md-12 mb-4">
+		                            <div class="col-md-12">
+		                            	<h3 class="text-center">
+		                            		Reporte general de 
+		                            		<span *ngIf="fecha_inicial"> {{fecha_fin.aniomes}} </span>
+		                            		<span *ngIf="existefin"> hasta <span *ngIf="mostrar_existefin">{{mostrar_existefin.aniomes}}</span></span>
+		                            	</h3>
+		                            </div>
+		                            <hr class="col-md-12 mb-4">
+		                            <div class="col-md-12">
+		                            	<div class="row">
+		                            		<div class="col-md-12">
+		                            			<h4 class="text-center">Consumo de agua</h4>
+		                            			<hr>
+		                            		</div>
+		                            		<div class="col-md-12">
+		                            			<div class="row">
+		                            				<div class="col-md-8">
+				                            			<div class="card-body table-responsive p-0">
+							                            	<table class="table table-hover table-information">
+											                    <tbody>
+											                        <tr>
+											                            <th>Total de facturas</th>
+											                            <th>Total Meses cobrados</th>
+											                            <th>Total usuarios cobrados</th>
+											                            <th>Total usuarios por cobrar</th>
+											                        </tr>
+											                    	<tr>
+											                            <td>
+											                            	<span *ngIf="total_facturas||total_facturas=='0'">
+											                            		<strong>{{total_facturas}}</strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span *ngIf="suma_meses_cobrados||suma_meses_cobrados=='0'">
+											                            		<strong>{{suma_meses_cobrados}}</strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span *ngIf="total_usuarioscobrados||total_usuarioscobrados=='0'">
+											                            		<strong>{{total_usuarioscobrados}} </strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span 
+											                            	*ngIf="total_usuariosporcobrar|| total_usuariosporcobrar=='0'"
+											                            	>
+											                            		<strong>{{total_usuariosporcobrar}} </strong>
+											                            	</span>
+											                            </td>
+											                        </tr>
+											                    </tbody>
+											                </table>
+						                            	</div>
+				                            		</div>		
+		                            			</div>
+		                            		</div>
+		                            		<div class="col-md-6">
+				                            	<div class="card-body table-responsive p-0">
+		                            				<h5 class="card-title">Reporte de cobros mensuales</h5>
+		                            				<h6 class="card-subtitle">Ingreso dinero </h6>
+					                            	<table class="table table-hover color-bordered-table info-bordered-table">
+									                    <thead>
+									                        <tr>
+									                            <th>Nº</th>
+									                            <th>Descripcion</th>
+									                            <th>Totales</th>
+									                        </tr>
+									                    </thead>
+									                    <tbody>
+									                        <tr>
+									                            <td>1</td>
+									                            <td>
+									                            	Total excesos
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_tar_excedido||suma_tar_excedido=='0'">
+									                            		<strong>{{suma_tar_excedido | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    	<tr>
+									                            <td>2</td>
+									                            <td>
+									                            	Total aporte minga
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_aporteminga||suma_aporteminga=='0'">
+									                            		<strong>{{suma_aporteminga | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    	<tr>
+									                            <td>3</td>
+									                            <td>
+									                            	Total alcantarillado
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_alcantarillado||suma_alcantarillado=='0'">
+									                            		<strong>{{suma_alcantarillado | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                        <tr>
+									                            <td>4</td>
+									                            <td>
+									                            	Total tarifa base
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_subtotal||suma_subtotal=='0'">
+									                            		<strong>{{suma_subtotal | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    </tbody>
+									                    <tfoot>
+									                        <tr style="border-top: 2px solid #398bf7">
+									                            <td></td>
+									                            <td>
+									                            	<h6><strong>Subtotal</strong></h6>
+									                            </td>
+									                            <td>
+									                            	<h6>
+										                            	<span *ngIf="total_sumar_detalle||total_sumar_detalle=='0'">
+										                            		<strong>{{total_sumar_detalle | currency}}</strong>
+										                            	</span>
+									                            	</h6>
+									                            </td>
+									                        </tr>
+									                        <tr>
+									                            <td></td>
+									                            <td>
+									                            	Total multa por reconexion
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_reconexion||suma_reconexion=='0'">
+									                            		<strong>{{suma_reconexion | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                        <tr class="table-primary">
+									                            <td></td>
+									                            <td>
+									                            	<h3><strong>Total</strong></h3>
+									                            </td>
+									                            <td>
+									                            	<h3>
+										                            	<span *ngIf="total_total||total_total=='0'">
+										                            		<strong>{{total_total | currency}}</strong>
+										                            	</span>
+									                            	</h3>
+									                            </td>
+									                        </tr>
+	  													</tfoot>
+									                </table>
+				                            	</div>
+		                            		</div>
+		                            		<div class="col-md-6">
+		                            			<div class="card-body table-responsive p-0">
+		                            				<h5 class="card-title">Reporte de consumo de agua mensual en m3</h5>
+		                            				<h6 class="card-subtitle">Consumo en metros cubicos (<small class="text-warning">m3</small>) </h6>
+					                            	<table class="table table-hover color-bordered-table success-bordered-table">
+									                    <thead>
+									                        <tr>
+									                            <th>Nº</th>
+									                            <th>Descripcion</th>
+									                            <th>Totales</th>
+									                        </tr>
+									                    </thead>
+									                    <tbody>
+									                    	<tr>
+									                            <td>1</td>
+									                            <td>
+									                            	Consumo mensual total
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_consumo||suma_consumo=='0'">
+									                            		<strong>{{suma_consumo}} <small>m3</small></strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                        <tr>
+									                            <td>2</td>
+									                            <td>
+									                            	Suma de medida de exceso mensual total
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_excedido||suma_excedido=='0'">
+									                            		<strong>{{suma_excedido}} <small>m3</small></strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    </tbody>
+									                </table>
+				                            	</div>
+		                            		</div>
+		                            	</div>
+		                            </div>
+		                            <div class="col-md-12 doNotPrint">
+	                                    <div class="clearfix"></div>
+	                                    <hr>
+	                                    <div class="text-right" *ngIf="imprimir">
+	                                    	
+											<button id="print" (click)="printComponent('consumoAgua','Reporte Consumo de Agua')" class="btn btn-primary btn-outline" type="button"> <span><i class="fa fa-print"></i> IMPRIMIR</span> </button>
+
+	                                        <button id="print"
+	                                        (click)="abrirVerReporte('reporteObtenerCobroMensual')"
+	                                        class="btn btn-danger btn-outline none" 
+	                                        type="button"> 
+	                                        	<span><i class="fa fa-file-pdf-o"></i> PDF</span>
+	                                    	</button>
+	                                    </div>
+	                                </div>
+	                            </div>
+                        	</div> <!-- end print -->
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                        	<div id="aguaGanaderia">
+	                            <div class="card-header bg-info">
+	                                <h4 class="m-b-0 text-white">Reporte de Agua Ganaderia</h4>
+	                            </div>
+	                            <div class="row card-body">
+	                            	<div class="col-md-12 doNotPrint">
+			                            <h2 class="text-center pt-5 pb-5">Seleccione un rango de fecha para generar el reporte</h2>
+			                            <p><strong>Debe seleccionar un rango de fecha para generar el reporte</strong></p>
+	                            	</div>
+		                            <hr class="col-md-12 doNotPrint">
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>Fecha inicial</span>
+		                            	<select class="form-control"  id="inicial_ganaderia" class="col-md-9 form-control form-control-sm"
+		                            		(change)="getAllControlaniomesDescencenteInicioFinGanaderia()"
+		                                    [(ngModel)]="fechabusquedaganaderia.inicial_ganaderia" name="inicial_ganaderia" required>
+		                                    <option *ngFor="let g of lista_controlaniomes_ganaderia" [ngValue]="g.ANIOMES">{{g.ANIOMES}}</option>
+		                                </select>
+		                            </div>
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>Fecha fin</span>
+		                            	<select class="form-control"  id="fin_ganaderia" class="col-md-9 form-control form-control-sm"
+		                                    [(ngModel)]="fechabusquedaganaderia.fin_ganaderia" name="fin_ganaderia"
+		                                    (change)="seleccionFinGanaderia($event)"
+		                                    >
+		                                    <option *ngFor="let g of lista_controlaniomes_desde_ganaderia" [ngValue]="g.ANIOMES">{{g.ANIOMES}}</option>
+		                                </select>
+		                            </div>
+		                            <div class="col-md-3 doNotPrint">
+		                            	<span>&nbsp;&nbsp;</span><br>
+		                            	<button (click)="BuscarGanaderia()" class="btn btn-primary btn-sm">Buscar <i class="fa fa-search"></i></button>
+		                            </div>
+		                            <hr class="col-md-12 mb-4">
+		                            <div class="col-md-12">
+		                            	<h3 class="text-center">
+		                            		Reporte general de 
+		                            		<span *ngIf="fecha_inicial_ganaderia"> {{fecha_fin_ganaderia.ANIOMES}} </span>
+		                            		<span *ngIf="existefin_ganaderia"> hasta <span *ngIf="mostrar_existefin_ganaderia">{{mostrar_existefin_ganaderia.ANIOMES}}</span></span>
+		                            	</h3>
+		                            </div>
+		                            <hr class="col-md-12 mb-4">
+		                            <div class="col-md-12">
+		                            	<div class="row">
+		                            		<div class="col-md-12">
+		                            			<h4 class="text-center">Consumo de Agua Ganaderia</h4>
+		                            			<hr>
+		                            		</div>
+		                            		<div class="col-md-12">
+		                            			<div class="row">
+		                            				<div class="col-md-8">
+				                            			<div class="card-body table-responsive p-0">
+							                            	<table class="table table-hover table-information">
+											                    <tbody>
+											                        <tr>
+											                            <th>Total de facturas</th>
+											                            <th>Total Meses cobrados</th>
+											                            <th>Total usuarios cobrados</th>
+											                            <th>Total usuarios por cobrar</th>
+											                        </tr>
+											                    	<tr>
+											                            <td>
+											                            	<span *ngIf="total_facturasganaderia||total_facturasganaderia=='0'">
+											                            		<strong>{{total_facturasganaderia}}</strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span *ngIf="suma_mesescobrados||suma_mesescobrados=='0'">
+											                            		<strong>{{suma_mesescobrados}}</strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span *ngIf="total_usuarioscobrados_ganaderia||
+											                            	total_usuarioscobrados_ganaderia=='0'">
+											                            		<strong>{{total_usuarioscobrados_ganaderia}} </strong>
+											                            	</span>
+											                            </td>
+											                            <td>
+											                            	<span 
+											                            	*ngIf="total_usuariosporcobrar_ganaderia||
+											                            	total_usuariosporcobrar_ganaderia=='0'"
+											                            	>
+											                            		<strong>{{total_usuariosporcobrar_ganaderia}} </strong>
+											                            	</span>
+											                            </td>
+											                        </tr>
+											                    </tbody>
+											                </table>
+						                            	</div>
+				                            		</div>		
+		                            			</div>
+		                            		</div>
+		                            		<div class="col-md-6">
+				                            	<div class="card-body table-responsive p-0">
+		                            				<h5 class="card-title">Reporte de cobros mensuales</h5>
+		                            				<h6 class="card-subtitle">Ingreso dinero </h6>
+					                            	<table class="table table-hover color-bordered-table info-bordered-table">
+									                    <thead>
+									                        <tr>
+									                            <th>Nº</th>
+									                            <th>Descripcion</th>
+									                            <th>Totales</th>
+									                        </tr>
+									                    </thead>
+									                    <tbody>
+									                        <tr>
+									                            <td>1</td>
+									                            <td>
+									                            	Subtotal
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_subtotalganaderia||suma_subtotalganaderia=='0'">
+									                            		<strong>{{suma_subtotalganaderia | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    	<tr>
+									                            <td>2</td>
+									                            <td>
+									                            	Iva
+									                            </td>
+									                            <td>
+									                            	<span *ngIf="suma_ivaganaderia||suma_ivaganaderia=='0'">
+									                            		<strong>{{suma_ivaganaderia | currency}}</strong>
+									                            	</span>
+									                            </td>
+									                        </tr>
+									                    </tbody>
+									                    <tfoot>
+									                        <tr class="table-primary">
+									                            <td></td>
+									                            <td>
+									                            	<h3><strong>Total</strong></h3>
+									                            </td>
+									                            <td>
+									                            	<h3>
+										                            	<span *ngIf="suma_totalganaderia||suma_totalganaderia=='0'">
+										                            		<strong>{{suma_totalganaderia | currency}}</strong>
+										                            	</span>
+									                            	</h3>
+									                            </td>
+									                        </tr>
+	  													</tfoot>
+									                </table>
+				                            	</div>
+		                            		</div>
+		                            	</div>
+		                            </div>
+		                            <div class="col-md-12 doNotPrint">
+	                                    <div class="clearfix"></div>
+	                                    <hr>
+	                                    <div class="text-right" *ngIf="imprimirganaderia">
+
+	                                    	<button id="print" (click)="printComponent('aguaGanaderia','Reporte Agua Ganaderia')" class="btn btn-primary btn-outline" type="button"> <span><i class="fa fa-print"></i> IMPRIMIR</span> </button>
+
+	                                        <button id="print" (click)="abrirVerReporte('reporteObtenerCobroMensual')" class="btn btn-default btn-outline none" type="button"> <span><i class="fa fa-print"></i> IMPRIMIR</span> </button>
+	                                    </div>
+	                                </div>
+	                            </div>
+                        	</div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="sobrante" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Reporte de Agua Sobrante</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

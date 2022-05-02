@@ -1,0 +1,161 @@
+ <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-info">
+                <h4 class="m-b-0 text-white">Datos personales</h4>
+            </div>
+            <div class="card-body">
+                <form role="form" #formAddUsers="ngForm" (ngSubmit)="createUser()">
+                    <div class="form-body">
+                        <div class="row p-t-20">
+                        	<div class="col-md-12">
+                        		<div class="alert alert-danger" *ngIf="validarcedula=='0'"> 
+                        			<i class="ti-user"></i> RUC / CI:<strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                                </div>
+                                <div class="alert alert-success" *ngIf="validarcedula=='1'"> 
+                        			<i class="ti-user"></i> Datos validos: <strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                                </div>
+                        		<small>Datos obligatorios(<span class="text-danger"> * </span>) </small>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                        	<div class="col-md-4">
+	                                <div class="form-group">
+	                                    <span class="control-label"><span class="text-danger"> * </span> RUC / CI</span>
+	                                    <input 
+	                                    type="text" 
+	                                    #RUCCI="ngModel" 
+	                                    name="RUCCI" 
+	                                    [(ngModel)]="users.RUCCI" 
+	                                    class="form-control form-control-sm" 
+	                                    placeholder="Ingrese su RUCCI"
+	                                    pattern="[0-9]+" 
+	                                    (ngModelChange)="validarCI(RUCCI)"
+	                                    required
+	                                    >
+
+	                                    <small *ngIf="!RUCCI.valid &&RUCCI.touched" class="badge badge-danger form-control-feedback" >RUC/CI ES OBLIGATORIO</small>
+	                                </div>
+	                            </div>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                            <div class="col-md-4">
+	                                <div class="form-group">
+	                                    <span class="control-label"><span class="text-danger"> * </span> NOMBRES</span>
+	                                    <input type="text" 
+	                                    #NOMBRES="ngModel" 
+	                                    name="NOMBRES" 
+	                                    [(ngModel)]="users.NOMBRES" 
+	                                    class="form-control form-control-sm" 
+	                                    placeholder="Ingrese los NOMBRES" 
+	                                    (ngModelChange)="convertirMayuscula(NOMBRES)"
+	                                    required pattern="[A-Z ]*" 
+	                                    style="text-transform: uppercase;">
+
+	                                    <small *ngIf="!NOMBRES.valid &&NOMBRES.touched" class="badge badge-danger form-control-feedback" >NOMBRES ES OBLIGATORIO</small>
+	                                </div>
+	                            </div>
+	                            <div class="col-md-4">
+	                                <div class="form-group">
+	                                    <span class="control-label"><span class="text-danger"> * </span> APELLIDOS</span>
+	                                    <input type="text" 
+	                                    #APELLIDOS="ngModel" 
+	                                    name="APELLIDOS" 
+	                                    [(ngModel)]="users.APELLIDOS" 
+	                                    class="form-control form-control-sm" 
+	                                    placeholder="Ingrese los APELLIDOS" 
+	                                    (ngModelChange)="convertirMayuscula(APELLIDOS)"
+	                                    required pattern="[A-Z ]*" 
+	                                    style="text-transform: uppercase;">
+
+	                                    <small *ngIf="!APELLIDOS.valid &&APELLIDOS.touched" class="badge badge-danger form-control-feedback" >APELLIDOS ES OBLIGATORIO</small>
+	                                </div>
+	                            </div>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                            <div class="col-md-4">
+	                                <div class="form-group">
+	                                    <span class="control-label">APODO</span>
+	                                    <input type="text" #APADOSN="ngModel" name="APADOSN" [(ngModel)]="users.APADOSN" class="form-control form-control-sm" placeholder="Ingrese el APODO">
+	                                    
+	                                </div>
+	                            </div>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                            <div class="col-md-6 row">
+	                            	<div class="col-md-6">
+		                                <div class="form-group">
+		                                    <span class="control-label">TELEFONO</span>
+		                                    <input type="text" #TELEFONO="ngModel" name="TELEFONO" [(ngModel)]="users.TELEFONO" class="form-control form-control-sm" placeholder="Ingrese su TELEFONO" pattern="[0-9]*">
+		                                </div>
+	                            	</div>
+		                            <div class="col-md-6">
+		                                <div class="form-group">
+		                                    <span class="control-label">CELULAR</span>
+		                                    <input type="text" #CELULAR="ngModel" name="CELULAR" [(ngModel)]="users.CELULAR" class="form-control form-control-sm" placeholder="Ingrese su CELULAR" pattern="[0-9]*">
+		                                </div>
+		                            </div>
+	                            </div>
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <span class="control-label"><span class="text-danger"> * </span> SECTOR</span>
+	                                    <select class="form-control"  id="SECTOR" class="col-md-9 form-control form-control-sm"
+                                              [(ngModel)]="users.SECTOR" name="SECTOR" required>
+                                            <option *ngFor="let g of sector" [ngValue]="g.name">{{g.name}}</option>
+                                        </select>
+	                                </div>
+	                            </div>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <span class="control-label">DIRECCION</span>
+	                                    <input type="text" #DIRECCION="ngModel" name="DIRECCION" [(ngModel)]="users.DIRECCION" class="form-control form-control-sm" placeholder="Ingrese su DIRECCION">
+	                                </div>
+	                            </div>
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <span class="control-label">EMAIL</span>
+	                                    <input type="email" 
+	                                    #email="ngModel" 
+	                                    name="email" 
+	                                    [(ngModel)]="users.email" 
+	                                    class="form-control form-control-sm" 
+	                                    placeholder="Ingrese su EMAIL" 
+	                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+	                                    (ngModelChange)="validateEmail(email)"
+	                                    >
+
+	                                </div>
+	                            </div>
+                        	</div>
+                        	<div class="col-md-12 row">
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <span class="control-label">REFERENCIA</span>
+	                                    <input type="text" #REFERENCIA="ngModel" name="REFERENCIA" [(ngModel)]="users.REFERENCIA" class="form-control form-control-sm" placeholder="Ingrese su REFERENCIA">
+	                                </div>
+	                            </div>
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <span class="control-label">OBSERVACION</span>
+	                                    <textarea #OBSERVACION="ngModel" name="OBSERVACION" [(ngModel)]="users.OBSERVACION" class="form-control form-control-sm" placeholder="Ingrese su OBSERVACION"></textarea>
+	                                </div>
+	                            </div>
+                        	</div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-outline-success"
+                        [disabled]="!formAddUsers.form.valid">
+                        	<i class="fa fa-check"></i> Guardar
+                    	</button>
+                        <button type="button" class="btn btn-inverse">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

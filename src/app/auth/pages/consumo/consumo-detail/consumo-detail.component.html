@@ -1,0 +1,645 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+
+<ng-template #administradores>
+</ng-template>
+
+<ng-template #operador>
+    <div class="row">
+    	<div class="col-12">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Sin lectura</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Con lectura</a> </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de medidores sin registro de consumo</h4>
+                            </div>
+                            <div *ngIf="!temp_medidor_sinlectura">
+					            <div class="sk-spinner sk-spinner-three-bounce">
+					                <div class="sk-bounce1"></div>
+					                <div class="sk-bounce2"></div>
+					                <div class="sk-bounce3"></div>
+					            	<div class="sk-spinner sk-spinner-pulse"></div>
+					            </div>
+					            
+					        </div>
+                            <div class="card-body" *ngIf="!this.temp_medidor_sinlectura">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>Todos los medidores estan registrados el consumo</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" *ngIf="this.temp_medidor_sinlectura">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>Lista de medidores con lectura</h3>
+                                            <div class="table-responsive p-0">
+                                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_medidor_sinlectura">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Cod medidor</th>
+                                                            <th>Cedula</th>
+                                                            <th>Usuario</th>
+                                                            <th>Apodo</th>
+                                                            <th>Ultima Lectura</th>
+                                                            <th>Ultimo mes</th>
+                                                            <th>Opciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let us of medidor_sinlectura;let i = index" id="fila{{i}}">
+                                                            <td><span *ngIf="us.CODIGO"> {{ us.CODIGO}} </span></td>
+                                                            <td>{{ us.users_name.RUCCI}}</td>
+                                                            <td>
+                                                            	<a class="btn btn-outline-success btn-sm" 
+								                                *ngIf="us.detalleanterior"
+								                                (click)="openRegistrarConsumoModal(registrarConsumo,us)"
+								                                title="Registrar consumo">
+                                                            		{{ us.users_name.NOMBRES}} {{ us.users_name.APELLIDOS}}
+								                                    <i class="fa fa-pencil-square-o"></i>
+								                                </a>
+								                                <span *ngIf="!us.detalleanterior">
+								                                	{{ us.users_name.NOMBRES}} {{ us.users_name.APELLIDOS}}
+								                                </span>
+                                                            </td>
+                                                            <td>{{ us.users_name.APADOSN}}</td>
+                                                            <td>
+                                                            	<span *ngIf="us.detalleanterior">
+                                                            		{{ us.detalleanterior.MEDIDAANT}}
+                                                            	</span>
+                                                            	<span class="text-danger" *ngIf="!us.detalleanterior">
+                                                            		SIN REGISTRO
+                                                            	</span>
+                                                            </td>
+                                                            <td>
+                                                            	<span *ngIf="us.detalleanterior">
+                                                            		{{ us.detalleanterior.ANIOMES}}
+                                                            	</span>
+                                                            	<span class="text-danger" *ngIf="!us.detalleanterior">
+                                                            		SIN REGISTRO
+                                                            	</span>
+                                                            </td>
+                                                            <td>
+								                                <a [routerLink]="['/consumo/detail-user',us.NUMMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle de medidor consumo ">
+								                                    <i class="fa fa-arrow-right"></i>
+								                                </a>
+								                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--second tab-->
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de medidores con registro de consumo</h4>
+                            </div>
+                            <div class="card-body" *ngIf="!this.temp_detallefactura">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>No tiene consumo registrados</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" *ngIf="this.temp_detallefactura">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="p-20">
+                                            <h3>Lista de medidores con lectura</h3>
+                                            <div class="table-responsive p-0">
+                                                <table datatable [dtOptions]="dtOptions_conlectura" class="table table-hover" *ngIf="this.temp_detallefactura">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Cod medidor</th>
+                                                            <th>Cedula</th>
+                                                            <th>Usuario</th>
+                                                            <th>Apodo</th>
+                                                            <th>Lect. Anterior</th>
+                                                            <th>Lect. Actual</th>
+                                                            <th>Consumo</th>
+                                                            <th>Excedido</th>
+                                                            <th>Opciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let us of detallefactura;let i = index" id="fila{{i}}">
+                                                            <td> <span *ngIf="us.medidor_usuario.CODIGO">{{ us.medidor_usuario.CODIGO}}</span></td>
+                                                            <td>{{ us.medidor_usuario.RUCCI}}</td>
+                                                            <td>{{ us.medidor_usuario.NOMBRES}} {{ us.medidor_usuario.APELLIDOS}}</td>
+                                                            <td>{{ us.medidor_usuario.APADOSN}}</td>
+                                                            <td>{{ us.MEDIDAANT}}</td>
+                                                            <td>{{ us.MEDIDAACT}}</td>
+                                                            <td>{{ us.CONSUMO}}</td>
+                                                            <td>{{ us.MEDEXCEDIDO}} </td>
+                                                            <td>
+								                                <a class="btn btn-outline-success btn-xs" 
+                                                                (click)="openEditarConsumoModal(editarConsumo,us)"
+                                                                title="Editar registro"
+                                                                *ngIf="us.estado=='0'"
+                                                                >
+                                                                    <i class="fa fa-pencil-square-o"></i>
+                                                                </a>
+								                                <a [routerLink]="['/consumo/detail-user',us.medidor_usuario.NUMMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+								                                    <i class="fa fa-arrow-right"></i>
+								                                </a>
+								                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<!--modals registrar consumo-->
+<ng-template #registrarConsumo let-modal>
+	<form role="form" #formRegistrarConsumo="ngForm" (ngSubmit)="createDetallefactura()">
+	    <div class="modal-header">
+	        <h4 class="modal-title" id="modal-basic-title">Registrar consumo</h4>
+	        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+	            <i class="fa fa-fw fa-question"></i>
+	        </button>
+	        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+	            <span aria-hidden="true">&times;</span>
+	        </button>
+	    </div>
+	    <div class="modal-body">
+	        <div class="row">
+	            <div class="col-12">
+	                <div id="acordion">
+	                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+	                        <div class="jumbotron jumbotron-fluid p-2">
+	                            <h5>Info</h5>
+	                            <p>Debe registrar el consumo mensual del medidor de cada usuario</p>
+	                            <p><strong>Se puede saltar los meses de registro de consumo si el usuario fue suspendido con corte</strong></p>
+	                            <p><strong>Caso contrario no se debe saltar los meses, debe ser consecutivo el registro de consumo</strong></p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-12" *ngIf="listamedidor">
+	            	<strong>Usuario: </strong> {{listamedidor.users_name.NOMBRES}} {{listamedidor.users_name.APELLIDOS}} - ({{listamedidor.users_name.APADOSN}})<br>
+	            	<strong>Cedula:</strong> {{listamedidor.users_name.RUCCI}} <br>
+	            	<strong>Numero medidor: </strong> {{listamedidor.NUMMEDIDOR}} <br>
+	            	<strong>Estado: </strong>
+	            		<span *ngIf="listamedidor.ESTADO=='ACTIVO'" class="badge badge-success">Activo</span>
+	            		<span *ngIf="listamedidor.ESTADO=='INACTIVO'" class="badge badge-danger">Inactivo</span><br>
+
+	            	<a 
+	            	class="btn btn-primary btn-sm" 
+	            	(click)="verConsumo=!verConsumo"
+	            	>
+	            		Ver consumos anteriores
+	            	</a>
+	            </div>
+	            <div class="col-12" *ngIf="verConsumo">
+	            	<div class="table-responsive p-0">
+	                    <table class="table table-hover" *ngIf="this.ultimos_registros">
+	                        <thead>
+	                            <tr>
+	                                <th>ANIOMES</th>
+	                                <th>MEDIDA ANTERIOR</th>
+	                                <th>MEDIDA REGISTRADO</th>
+	                                <th>CONSUMO</th>
+	                                <th>MEDIDA EXCEDIDO</th>
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                            <tr *ngFor="let us of ultimos_registros;let i = index">
+	                                <td>{{ us.ANIOMES}}</td>
+	                                <td>{{ us.MEDIDAANT}}</td>
+	                                <td>{{ us.MEDIDAACT}}</td>
+	                                <td>{{ us.CONSUMO}}</td>
+	                                <td>{{ us.MEDEXCEDIDO}} </td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	            <div class="col-12">
+	            	<hr>
+                    <div class="form-material m-t-40 row">
+                    	<div class="form-group col-md-2 m-t-20" *ngIf="controlaniomes">
+                    		<span>ANIOMES</span>
+                    		<input type="text" class="form-control form-control-line" placeholder="aniomes" readonly
+                    		value="{{controlaniomes.aniomes}}">
+                    	</div>
+                    	<div class="form-group col-md-2 m-t-20" *ngIf="listamedidor">
+                    		<span>MEDIDA ANTERIOR</span>
+                    		<input type="text" class="form-control form-control-line" placeholder="medida anterior"
+                    		readonly value="{{listamedidor.detalleanterior.MEDIDAACT}}">
+                    	</div>
+                    	<div class="form-group col-md-2 m-t-20">
+                    		<span>MEDIDA ACTUAL</span>
+                            <input 
+                            type="number" 
+                            #MEDIDAACT="ngModel" 
+                            name="MEDIDAACT" 
+                            [(ngModel)]="detallefactura_model.MEDIDAACT"
+                            
+                            class="form-control form-control-line" 
+                            placeholder="Ingrese su MEDIDA ACTUAL" 
+                            required 
+                            
+                            (ngModelChange)="calcularConsumo(MEDIDAACT)"
+                            pattern="[0-9]*"
+                            >
+                            <small *ngIf="!MEDIDAACT.valid &&MEDIDAACT.touched" class="text-danger" >MEDIDA ACTUAL ES OBLIGATORIO</small>
+                            <small *ngIf="medidaactualmensaje"
+                            class="text-danger"
+                            >
+                            	Valor debe ser mayor al anterior
+                            </small>
+                    	</div>
+                        <div class="col-md-5 p-5 m-l-20 m-t-20" style="background: rgb(0 0 0 / 5%);border-radius: 11px;">
+                            <div class="form-group">
+                        	</div>
+
+                        	<div class="form-group">
+                                <span><strong>BASE: </strong></span>
+                                <span *ngIf="tarifas.BASE">
+                                    {{tarifas.BASE}} <small>m3</small>
+                                </span>
+                                <br>
+                        		<span><strong>MEDIDA EXCEDIDO: </strong></span>
+                        		<span *ngIf="medidaexcedido||medidaexcedido==0">
+                        			{{medidaexcedido}} <small>m3</small>
+                        		</span>
+                                <br>
+                                <hr>
+                            	<span><strong>TOTALCONSUMO: </strong></span>
+                            	<span *ngIf="consumo||consumo==0">
+                            		<strong>{{consumo}} <small>m3</small></strong>
+                            	</span>
+                                <br><br>
+                                <span><strong>TARIFA EXCEDIDO: </strong></span>
+                                <span *ngIf="tarifa_excedido||tarifa_excedido==0">
+                                    {{tarifa_excedido | currency}}
+                                </span><br>
+                                <span><strong>TARIFA BASE: </strong></span>
+                                <span *ngIf="tarifas.TARBASE">
+                                    {{tarifas.TARBASE | currency}}
+                                </span><br>
+                                <span><strong>APORTE MINGA: </strong></span>
+                                <span *ngIf="tarifas.APORTEMINGA">
+                                    {{tarifas.APORTEMINGA | currency}}
+                                </span><br>
+                                <hr>
+                                <span *ngIf="suma_tarifas||suma_tarifas==0">
+                                    <strong>TOTAL POR CONSUMO: {{suma_tarifas | currency}} </strong>
+                                </span>
+
+                        	</div>
+                        </div>
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="collapse" data-parent="#accordion2" href="#collapseInfo" aria-expanded="false" (click)="icono=!icono"
+                            >
+                                Restablecer medidor <i class="fa fa-caret-down" *ngIf="!icono"></i>
+                                <i class="fa fa-caret-up" *ngIf="icono"></i>
+                            </button>
+
+                            <div id="acordion2">
+                                <div id="collapseInfo" class="panel-collapse in collapse" style="">
+                                    <div class="jumbotron jumbotron-fluid p-2">
+                                        <h5>Info</h5>
+                                        <p>En esta seccion permite restablecer el registro de medida del medidor.</p>
+                                        <p><strong>Se debe restablecer en caso de que remplace un medidor nuevo. Y debe estar seguro de hacerlo, ya que los registros de facturacion y registros contables se basan en su medida del medidor.</strong></p>
+                                        <p><strong>Caso contrario no se debe restablecer</strong></p>
+                                        <a class="btn btn-primary btn-sm" (click)="modal.close('Cancelar');openEditarConsumoMedidorModal(editarConsumoMedida)" >Abrir formulario</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button type="submit" 
+	        class="btn btn-outline-success float-right" 
+	        (click)="modal.close('guardarestado')"
+	        [disabled]="!formRegistrarConsumo.form.valid"
+	        >
+	        	<i class="fa fa-check"></i> GUARDAR
+	        </button>
+	        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+	        	CERRAR
+	        </button>
+	    </div>
+    </form>
+</ng-template>
+<!--fin modals registrar consumo-->
+
+<!--modals editar cliente -->
+<ng-template #editarConsumo let-modal>
+    <form role="form" #formRegistrarConsumo="ngForm" (ngSubmit)="editDetallefactura()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Editar lectura</h4>
+            <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+                <i class="fa fa-fw fa-question"></i>
+            </button>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div id="acordion">
+                        <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                            <div class="jumbotron jumbotron-fluid p-2">
+                                <h5>Info</h5>
+                                <p>En esta seccion usted podrá editar la lectura de consumos ingresados</p>
+                                <p><strong>Se puede editar si el usuario aun no ha sido facturado</strong></p>
+                                <p><strong>Caso contrario no se podrá editar</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="detallefactura_edit">
+                    <strong>Usuario: </strong> {{detallefactura_edit.medidor_usuario.NOMBRES}} {{detallefactura_edit.medidor_usuario.APELLIDOS}} - ({{detallefactura_edit.medidor_usuario.APADOSN}})<br>
+                    <strong>Numero medidor: </strong> {{detallefactura_edit.medidor_usuario.NUMMEDIDOR}} <br>
+                    <a 
+                    class="btn btn-primary btn-sm" 
+                    (click)="verConsumo=!verConsumo"
+                    >
+                        Ver consumos anteriores
+                    </a>
+                </div>
+                <div class="col-12" *ngIf="verConsumo">
+                    <div class="table-responsive p-0">
+                        <table class="table table-hover" *ngIf="this.ultimos_registros">
+                            <thead>
+                                <tr>
+                                    <th>ANIOMES</th>
+                                    <th>MEDIDA ANTERIOR</th>
+                                    <th>MEDIDA REGISTRADO</th>
+                                    <th>CONSUMO</th>
+                                    <th>MEDIDA EXCEDIDO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let us of ultimos_registros;let i = index">
+                                    <td>{{ us.ANIOMES}}</td>
+                                    <td>{{ us.MEDIDAANT}}</td>
+                                    <td>{{ us.MEDIDAACT}}</td>
+                                    <td>{{ us.CONSUMO}}</td>
+                                    <td>{{ us.MEDEXCEDIDO}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                    
+                        <div class="form-material m-t-40 row">
+                            <div class="form-group col-md-2 m-t-20" *ngIf="detallefactura_edit">
+                                <span>ANIOMES</span>
+                                <input type="text" class="form-control form-control-line" placeholder="aniomes" readonly
+                                value="{{detallefactura_edit.ANIOMES}}">
+                            </div>
+                            <div class="form-group col-md-2 m-t-20" *ngIf="detallefactura_edit">
+                                <span>MEDIDA ANTERIOR</span>
+                                <input type="text" class="form-control form-control-line" placeholder="medida anterior"
+                                readonly value="{{detallefactura_edit.MEDIDAANT}}">
+                            </div>
+
+                            <div class="form-group col-md-2 m-t-20">
+                                <span>MEDIDA ACTUAL</span>
+                                <input 
+                                type="number" 
+                                #MEDIDAACT="ngModel" 
+                                name="MEDIDAACT" 
+                                [(ngModel)]="detallefactura_edit.MEDIDAACT"
+                                
+                                class="form-control form-control-line" 
+                                placeholder="Ingrese su MEDIDA ACTUAL" 
+                                required 
+                                
+                                (ngModelChange)="calcularConsumoEdit(MEDIDAACT)"
+                                >
+                                <small *ngIf="!MEDIDAACT.valid &&MEDIDAACT.touched" class="text-danger" >MEDIDA ACTUAL ES OBLIGATORIO</small>
+                                <small *ngIf="medidaactualmensaje"
+                                class="text-danger"
+                                >
+                                    Valor debe ser mayor al anterior
+                                </small>
+                            </div>
+                            
+                            <div class="form-group col-md-2 m-t-20" *ngIf="consumo||consumo==0">
+                                <span>CONSUMO</span><br>
+                                <span>
+                                    {{consumo}}
+                                </span>
+                            </div>
+                            <div class="form-group col-md-2 m-t-20" *ngIf="medidaexcedido">
+                                <span>MEDIDA EXCEDIDO</span><br>
+                                <span>
+                                    {{medidaexcedido}}
+                                </span>
+                            </div>
+
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" 
+            class="btn btn-outline-success float-right" 
+            (click)="modal.close('guardar')"
+            [disabled]="!formRegistrarConsumo.form.valid"
+            >
+                <i class="fa fa-check"></i> GUARDAR
+            </button>
+            <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+                CERRAR
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!--fin modals editar cliente -->
+
+<!--modals reiniciar conteo del detallefactura -->
+<ng-template #editarConsumoMedida let-modal>
+    <form role="form" #formEditarConsumoMedida="ngForm" (ngSubmit)="createDetallefactura()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Registrar nuevo conteo de lectura</h4>
+            <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+                <i class="fa fa-fw fa-question"></i>
+            </button>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div id="acordion">
+                        <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                            <div class="jumbotron jumbotron-fluid p-2">
+                                <h5>Info</h5>
+                                <p>En esta seccion usted podrá editar el conteo de la lectura de consumos</p>
+                                <p><strong>Debe estar seguro de editar, ya que los registros para la facturacion y contabilidad se basa en las medidas del medidor</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="listamedidor">
+                    <strong>Usuario: </strong> {{listamedidor.users_name.NOMBRES}} {{listamedidor.users_name.APELLIDOS}} - ({{listamedidor.users_name.APADOSN}})<br>
+                    <strong>Cedula:</strong> {{listamedidor.users_name.RUCCI}} <br>
+                    <strong>Codigo medidor: </strong> {{listamedidor.CODIGO}} <br>
+                    <strong>Estado: </strong>
+                        <span *ngIf="listamedidor.ESTADO=='ACTIVO'" class="badge badge-success">Activo</span>
+                        <span *ngIf="listamedidor.ESTADO=='INACTIVO'" class="badge badge-danger">Inactivo</span><br>
+                </div>
+                <div class="col-12">
+                    <div class="table-responsive p-0">
+                        <table class="table table-hover" *ngIf="this.ultimos_registros">
+                            <thead>
+                                <tr>
+                                    <th>ANIOMES</th>
+                                    <th>MEDIDA ANTERIOR</th>
+                                    <th>MEDIDA REGISTRADO</th>
+                                    <th>CONSUMO</th>
+                                    <th>MEDIDA EXCEDIDO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let us of ultimos_registros;let i = index">
+                                    <td>{{ us.ANIOMES}}</td>
+                                    <td>{{ us.MEDIDAANT}}</td>
+                                    <td>{{ us.MEDIDAACT}}</td>
+                                    <td>{{ us.CONSUMO}}</td>
+                                    <td>{{ us.MEDEXCEDIDO}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                    <div class="form-material m-t-40 row">
+                        <div class="form-group col-md-2 m-t-20" *ngIf="controlaniomes">
+                            <span>ANIOMES</span>
+                            <input type="text" class="form-control form-control-line" placeholder="aniomes" readonly
+                            value="{{controlaniomes.aniomes}}">
+                        </div>
+                        <div class="form-group col-md-2 m-t-20" *ngIf="listamedidor">
+                            <span>MEDIDA NUEVA ANTERIOR</span>
+                            <input
+                            type="number" 
+                            #MEDIDAANT="ngModel" 
+                            name="MEDIDAANT" 
+                            [(ngModel)]="detallefactura_model.MEDIDAANT"
+                            
+                            class="form-control form-control-line" 
+                            placeholder="medida nueva anterior"
+                            required 
+                            pattern="[0-9]*"
+                            >
+                        </div>
+                        <div class="form-group col-md-2 m-t-20">
+                            <span>MEDIDA NUEVA ACTUAL</span>
+                            <input 
+                            type="number" 
+                            #MEDIDAACT="ngModel" 
+                            name="MEDIDAACT" 
+                            [(ngModel)]="detallefactura_model.MEDIDAACT"
+                            
+                            class="form-control form-control-line" 
+                            placeholder="Ingrese su MEDIDA ACTUAL" 
+                            required 
+                            
+                            (ngModelChange)="calcularConsumo(MEDIDAACT)"
+                            pattern="[0-9]*"
+                            >
+                            <small *ngIf="!MEDIDAACT.valid &&MEDIDAACT.touched" class="text-danger" >MEDIDA ACTUAL ES OBLIGATORIO</small>
+                            <small *ngIf="medidaactualmensaje"
+                            class="text-danger"
+                            >
+                                Valor debe ser mayor al anterior
+                            </small>
+                        </div>
+                        <div class="col-md-5 p-5 m-l-20 m-t-20" style="background: rgb(0 0 0 / 5%);border-radius: 11px;">
+                            <div class="form-group">
+                            </div>
+
+                            <div class="form-group">
+                                <span><strong>BASE: </strong></span>
+                                <span *ngIf="tarifas.BASE">
+                                    {{tarifas.BASE}} <small>m3</small>
+                                </span>
+                                <br>
+                                <span><strong>MEDIDA EXCEDIDO: </strong></span>
+                                <span *ngIf="medidaexcedido||medidaexcedido==0">
+                                    {{medidaexcedido}} <small>m3</small>
+                                </span>
+                                <br>
+                                <hr>
+                                <span><strong>TOTALCONSUMO: </strong></span>
+                                <span *ngIf="consumo||consumo==0">
+                                    <strong>{{consumo}} <small>m3</small></strong>
+                                </span>
+                                <br><br>
+                                <span><strong>TARIFA EXCEDIDO: </strong></span>
+                                <span *ngIf="tarifa_excedido||tarifa_excedido==0">
+                                    {{tarifa_excedido | currency}}
+                                </span><br>
+                                <span><strong>TARIFA BASE: </strong></span>
+                                <span *ngIf="tarifas.TARBASE">
+                                    {{tarifas.TARBASE | currency}}
+                                </span><br>
+                                <hr>
+                                <span *ngIf="suma_tarifas||suma_tarifas==0">
+                                    <strong>TOTAL POR CONSUMO: {{suma_tarifas | currency}} </strong>
+                                </span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" 
+            class="btn btn-outline-success float-right" 
+            (click)="modal.close('guardar')"
+            [disabled]="!formEditarConsumoMedida.form.valid"
+            >
+                <i class="fa fa-check"></i> GUARDAR
+            </button>
+            <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+                CERRAR
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!--fin modals reiniciar conteo del detallefactura -->

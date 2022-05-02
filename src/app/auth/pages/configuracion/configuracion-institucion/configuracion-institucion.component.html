@@ -1,0 +1,155 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-12" *ngIf="!institucion">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="institucion">
+        	<div class="card">
+	            <div class="card-body p-0">
+	            	<h2>Datos de institucion</h2>
+	            	<br>
+	            	<hr>
+	            	<div *ngIf="institucion">
+	            		<div class="card card-body printableArea">
+	                        <h3><b *ngIf="institucion.RUC">{{institucion.NOMBREINST}}</b> <span class="pull-right" *ngIf="institucion.RUC">RUC: {{institucion.RUC}}</span></h3>
+	                        <hr>
+	                        <div class="row">
+	                            <div class="col-md-12">
+	                                <div class="pull-left">
+	                                    <address>
+	                                        <h3> &nbsp;<b class="text-danger" *ngIf="institucion.DIRECCION">Direción: {{institucion.DIRECCION}}</b></h3>
+	                                        <p class="text-muted m-l-5">
+	                                        	<span><strong>Telefono: </strong><span *ngIf="institucion.TELEFONO"> {{institucion.TELEFONO}} </span> </span>,<br>
+	                                            <span><strong>Celular: </strong><span *ngIf="institucion.CELULAR"> {{institucion.CELULAR}} </span> </span>,<br>
+	                                            <span><strong>EMAIL: </strong><span *ngIf="institucion.EMAIL"> {{institucion.EMAIL}} </span> </span>,<br>
+	                                            <span><strong>PAGINAWEB: </strong><span *ngIf="institucion.PAGINAWEB"> {{institucion.PAGINAWEB}} </span> </span>,
+	                                        </p>
+	                                    </address>
+	                                </div>
+	                                <div class="pull-right text-right">
+	                                    <button class="btn btn-primary btn-sm" (click)="editarInstitucionOpenModal(editInstitucion)" >Editar <i class="fa fa-pencil-square-o"></i></button>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	            	</div>
+	            </div>
+        	</div>
+        </div>
+    </div>
+</ng-template>
+
+<!--modals edit Institucion-->
+<ng-template #editInstitucion let-modal>
+    <form role="form" #formEditarInstitucion="ngForm" (ngSubmit)="editarInstitucion()">
+	    <div class="modal-header">
+	        <h4 class="modal-title" id="modal-basic-title">Editar Datos de la institución</h4>
+	        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+	            <i class="fa fa-fw fa-question"></i>
+	        </button>
+	        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+	            <span aria-hidden="true">&times;</span>
+	        </button>
+	    </div>
+	    <div class="modal-body">
+	        <div class="row">
+	            <div class="col-12">
+	                <div id="acordion">
+	                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+	                        <div class="jumbotron jumbotron-fluid p-2">
+	                            <h5>Info</h5>
+	                            <p>En esta seccion usted puede editar los datos de la institucion.</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-12">
+	            	<div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> RUC</span>
+                        <input 
+                        type="text" 
+                        #RUC="ngModel" 
+                        name="RUC" 
+                        [(ngModel)]="institucion.RUC" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese su RUC"
+                        pattern="[0-9]+" 
+                        required
+                        >
+
+                        <small *ngIf="!RUC.valid &&RUC.touched" class="badge badge-danger form-control-feedback" >RUC ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label"><span class="text-danger"> * </span> NOMBRE</span>
+                        <input type="text" 
+                        #NOMBREINST="ngModel" 
+                        name="NOMBREINST" 
+                        [(ngModel)]="institucion.NOMBREINST" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese el nombre de la institución" 
+                        required
+                        >
+                        <small *ngIf="!NOMBREINST.valid &&NOMBREINST.touched" class="badge badge-danger form-control-feedback" >NOMBRE ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">CELULAR</span>
+                        <input 
+                        type="text" 
+                        #CELULAR="ngModel" 
+                        name="CELULAR" 
+                        [(ngModel)]="institucion.CELULAR" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese numero de CELULAR"
+                        pattern="[0-9]+" 
+                        >
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">TELEFONO</span>
+                        <input type="text" #TELEFONO="ngModel" name="TELEFONO" [(ngModel)]="institucion.TELEFONO" class="form-control form-control-sm" placeholder="Ingrese el TELEFONO" pattern="[0-9]*">
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">DIRECCION</span>
+                        <input type="text" 
+                        #DIRECCION="ngModel" 
+                        name="DIRECCION" 
+                        [(ngModel)]="institucion.DIRECCION" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese los DIRECCION" 
+                        >
+                    </div>
+	            	<div class="form-group">
+                        <span class="control-label">EMAIL</span>
+                        <input type="text" #EMAIL="ngModel" name="EMAIL" [(ngModel)]="institucion.EMAIL" class="form-control form-control-sm" placeholder="Ingrese el correo electronico">
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label">PAGINAWEB</span>
+                        <input type="text" #PAGINAWEB="ngModel" name="PAGINAWEB" [(ngModel)]="institucion.PAGINAWEB" class="form-control form-control-sm" placeholder="Ingrese pagina web">
+                    </div>
+                    
+	            </div>
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button type="submit" 
+	        class="btn btn-outline-success float-right" 
+	        (click)="modal.close('guardar')"
+	        [disabled]="!formEditarInstitucion.form.valid"
+	        >
+	        	<i class="fa fa-check"></i> GUARDAR
+	        </button>
+	        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+	        	CERRAR
+	        </button>
+	    </div>
+    </form>
+</ng-template>
+<!--fin modals edit Institucion-->

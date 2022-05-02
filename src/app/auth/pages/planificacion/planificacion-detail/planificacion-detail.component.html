@@ -1,0 +1,255 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-12" *ngIf="!temp_var">
+
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            <div class="sk-spinner sk-spinner-pulse"></div>
+            </div>
+            
+        </div>
+        <div class="col-12" *ngIf="temp_var">
+        	<div class="card">
+	            <div class="card-body">
+	            	<h2>Lista de usuarios asistidos y no asistidos</h2>
+	            	<br>
+	            	<hr>
+                    <button type="button" class="btn btn-warning btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoPlanificacion" aria-expanded="false">
+                        Informacion <i class="fa fa-fw fa-question"></i>
+                    </button>
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="acordion">
+                                <div id="collapseInfoPlanificacion" class="panel-collapse in collapse" style="">
+                                    <div class="jumbotron jumbotron-fluid p-2">
+                                        <h5>Info</h5>
+                                        <p>En esta seccion usted puede registrar los usuarios que asisten o no asisten al evento de planificacion(minga o asamblea).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <div class="col-md-12">
+                        <div class="card card-outline-success">
+                            <div class="card-header">
+                                <h4 class="m-b-0 text-white">Carga de usuarios</h4></div>
+                            <div class="card-body">
+                                <h3 class="card-title">Registrar usuario</h3>
+                                <p class="card-text">
+                                    En esta seccion al darle click en el boton <strong>Cargar todos los usuarios</strong> usted registrará todos los usuarios con medidores <strong>activos</strong>.
+                                </p>
+                                <strong>Nota:</strong> Todos los usuarios que se carga al principio se registran con estado de <strong>NO ASISTE</strong> de manera que usted tendrá que registrar los usuarios que asistan al evento (minga o asamblea).<br><br>
+                                <hr>
+                                <button class="btn btn-primary btn-lg" *ngIf="total_sinlectura!=0"
+                                (click)="cargarUsuariosModal(cargarUsuarios);"
+                                >
+                                    Cargar todos los usuarios
+                                </button>
+                                <span *ngIf="total_sinlectura==0">No hay usuarios activos sin registrar</span>
+                            </div>
+                        </div>
+                    </div>
+	            	<div *ngIf="temp_var">
+	            		<div class="card-body table-responsive pt-2">
+                            <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                                <thead>
+                                    <tr>
+                                        <th>Nº</th>
+                                        <th>CI</th>
+                                        <th>NOMBRES</th>
+                                        <th>APELLIDOS</th>
+                                        <th>APODO</th>
+                                        <th>SECTOR</th>
+                                        <th>CODIGO</th>
+                                        <th>ASISTENCIA</th>
+                                        <th>MULTA</th>
+                                        <th>PAGADO</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let us of this.lista_usuarios; let i =index">
+                                        <td>{{ i + 1}}</td>
+                                        <td>{{ us.medidor_select.users_name.RUCCI}}</td>
+                                        <td>{{ us.medidor_select.users_name.NOMBRES}}</td>
+                                        <td>{{ us.medidor_select.users_name.APELLIDOS}}</td>
+                                        <td>{{ us.medidor_select.users_name.APADOSN}}</td>
+                                        <td>{{ us.medidor_select.users_name.SECTOR}}</td>
+                                        <td>{{ us.medidor_select.CODIGO}}</td>
+                                        <td>
+                                            {{ us.ASISTENCIA}}
+                                            <a class="btn btn-outline-success btn-xs"
+                                            (click)="openRegistrarAsistenciaModal(registrarUsuario,us)" title="Registrar asistencia">
+                                                <i class="fa fa-pencil-square-o"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{ us.VALORMULTA}}</td>
+                                        <td>
+                                        	<span *ngIf="us.OBSEVACION=='SI'" class="text-success"> SI </span>
+                                        	<span *ngIf="us.OBSEVACION=='NO'" class="text-danger"> NO </span>
+                                        </td>
+                                        <td>
+                                            <a [routerLink]="['/medidor/detail',us.IDMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Ver usuario">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </a>
+                                            
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+	            	</div>
+	            </div>
+        	</div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<!--modals registraar todos los usuarios sin registro-->
+<ng-template #cargarUsuarios let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Registrar usuarios en la lista de asistencia a la minga/asamblea</h4>
+        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+            <i class="fa fa-fw fa-question"></i>
+        </button>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div id="acordion">
+                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                        <div class="jumbotron jumbotron-fluid p-2">
+                            <h5>Info</h5>
+                            <p>Lista de usuarios con <strong>medidores activos</strong> para registrar la asistencia de un usuario seleccione con un visto en el boton de checkbox.</p>
+                            <strong>Se puede editar la asistencia despues de haber guardado</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card-body table-responsive pt-2">
+                    <p class="card-text">
+                        <input type="checkbox" id="md_checkbox_27" class="filled-in chk-col-light-blue" checked disabled style="opacity: 0">
+                        <label for="md_checkbox_27">Registre con un visto para registrar los usuarios que <strong>asisten</strong>.</label><br>
+
+                        <input type="checkbox" id="md_checkbox_28" class="filled-in chk-col-light-blue" disabled style="opacity: 0">
+                        <label for="md_checkbox_28">Registre sin el visto para registrar a los usuarios que <strong>no asistan</strong>.</label>
+                    </p>
+                    <table class="table table-hover" *ngIf="this.temp_var_medidores" id="customers">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>CEDULA</th>
+                                <th>NOMBRES</th>
+                                <th>APELLIDOS</th>
+                                <th>APODO</th>
+                                <th>SECTOR</th>
+                                <th>CODIGO</th>
+                                <th>Select <input type="checkbox" [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let us of this.lista_medidores_activos; let i =index">
+                                <td>{{ i + 1}}</td>
+                                <td>{{ us.users_name.RUCCI}}</td>
+                                <td>{{ us.users_name.NOMBRES }}</td>
+                                <td>{{ us.users_name.APELLIDOS}}</td>
+                                <td>{{ us.users_name.APADOSN}}</td>
+                                <td>{{ us.users_name.SECTOR}}</td>
+                                <td>{{ us.CODIGO}}</td>
+                                <td>
+                                    <!-- <input type="checkbox" (change)="getUsers($event,us)"> -->
+                                    <input type="checkbox" value="{{us.IDMEDIDOR}}" [(ngModel)]="lista_medidores_activos[i].checked" (change)="getUsers($event,us)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" 
+        class="btn btn-outline-success float-right" 
+        (click)="modal.close('guardar')"
+        >
+            <i class="fa fa-check"></i> GUARDAR
+        </button>
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+            CANCELAR
+        </button>
+    </div>
+</ng-template>
+<!--fin modals registraar todos los usuarios sin registro-->
+
+<!--modals registraar todos los usuarios sin registro-->
+<ng-template #registrarUsuario let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Editar asistencia</h4>
+        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+            <i class="fa fa-fw fa-question"></i>
+        </button>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div id="acordion">
+                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                        <div class="jumbotron jumbotron-fluid p-2">
+                            <h5>Info</h5>
+                            <p>Editar la asistencia del usuario.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <span>
+                    <strong>Asistio a la<span *ngIf='dato_planificacion.TIPOPLANIFICACION'>{{dato_planificacion.TIPOPLANIFICACION}}</span>?</strong>
+                </span><br>
+                <span *ngIf="asistencia.ASISTENCIA=='NO'">
+                    <strong><span *ngIf="dato_planificacion.TIPOPLANIFICACION"> {{dato_planificacion.TIPOPLANIFICACION}} - {{dato_planificacion.FECHA | date: 'mediumDate'}}</span></strong><br>
+                    Nombre: <span *ngIf="asistencia.medidor_select.users_name">{{asistencia.medidor_select.users_name.NOMBRES}} {{asistencia.medidor_select.users_name.APELLIDOS}} </span> <br>
+                    RUC / CI: <span *ngIf="asistencia.medidor_select.users_name"> {{asistencia.medidor_select.users_name.RUCCI}} </span> <br>
+                    Codigo medidor: <span *ngIf="asistencia.medidor_select"> {{asistencia.medidor_select.CODIGO}} </span>
+                    <hr>
+                    <h3 class="text-center"><strong>SI</strong></h3>
+                </span>
+                <span *ngIf="asistencia.ASISTENCIA=='SI'">
+                    <strong><span *ngIf="dato_planificacion.TIPOPLANIFICACION"> {{dato_planificacion.TIPOPLANIFICACION}} - {{dato_planificacion.FECHA | date: 'mediumDate'}}</span></strong><br>
+                    Nombre: <span *ngIf="asistencia.medidor_select.users_name">{{asistencia.medidor_select.users_name.NOMBRES}} {{asistencia.medidor_select.users_name.APELLIDOS}} </span> <br>
+                    RUC / CI: <span *ngIf="asistencia.medidor_select.users_name"> {{asistencia.medidor_select.users_name.RUCCI}} </span> <br>
+                    Codigo medidor: <span *ngIf="asistencia.medidor_select"> {{asistencia.medidor_select.CODIGO}} </span>
+                    <hr>
+                    <h3 class="text-center"><strong>NO</strong></h3>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" 
+        class="btn btn-outline-success float-right" 
+        (click)="modal.close('guardar')"
+        >
+            <i class="fa fa-check"></i> GUARDAR
+        </button>
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+            CANCELAR
+        </button>
+    </div>
+</ng-template>
+<!--fin modals registraar todos los usuarios sin registro-->

@@ -1,0 +1,197 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+
+<ng-template #administradores>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Medidor</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Otras Facturas</a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de medidores</h4>
+                            </div>
+                            <div class="card-body table-responsive pt-2">
+                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                                    <thead>
+                                        <tr>
+                                            <th>Nº</th>
+                                            <th>Nombres</th>
+                                            <th>Apellidos</th>
+                                            <th>Sector</th>
+                                            <th>Estado Usuario</th>
+                                            <th style="background: #e9ecef;">Cod Medidor</th>
+                                            <th>Estado Medidor</th>
+                                            <th>Tipo</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let us of this.medidorusers; let i =index">
+                                            <td>{{ i + 1}}</td>
+                                            <td>{{ us.medidor.users.NOMBRES}}</td>
+                                            <td>{{ us.medidor.users.APELLIDOS}}</td>
+                                            <td>{{ us.medidor.users.SECTOR}}</td>
+                                            <td>
+                                                <span *ngIf="us.medidor.users.ESTADO=='1'">
+                                                    <span class="badge badge-success">Activo</span>
+                                                </span>
+                                                <span *ngIf="us.medidor.users.ESTADO=='0'">
+                                                    <span class="badge badge-danger">Inactivo</span>
+                                                </span>
+                                            </td>
+                                            <td style="background: #e9ecef;">
+                                                <strong>{{ us.medidor.CODIGO}}</strong>
+                                            </td>
+                                            <td><b><strong>{{ us.medidor.ESTADO}}</strong></b></td>
+                                            <td>
+                                                <span *ngIf="us.NIVEL==1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-info">PRINCIPAL</div>
+                                                    </div>
+                                                </span>
+                                                <span *ngIf="us.NIVEL!=1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-inverse">SECUNDARIO</div>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td class="overflow-hidden">
+                                                <div ngbDropdown container="body">
+                                                    <button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Opciones</button>
+                                                    <div ngbDropdownMenu>
+                                                        <a ngbDropdownItem class="btn" 
+                                                        (click)="openVerModalUsers(verCliente,us)" title="Ver medidor">
+                                                            Ver <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a ngbDropdownItem
+                                                        [routerLink]="['/medidor/detail',us.medidor.IDMEDIDOR]" title="Detalle usuario">
+                                                            Entrar<i class="fa fa-arrow-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Otras facturas</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#Pendientes" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Pendientes</span></a> </li>
+                                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#pagadas" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Pagadas</span></a> </li>
+                                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#otrasfacturas" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Otras facturas</span></a> </li>
+                                        </ul>
+                                        <div class="tab-content tabcontent-border">
+                                            <div class="tab-pane active" id="Pendientes" role="tabpanel">
+                                                <div class="p-20">
+                                                    <h3>Lista de facturas por pagar <strong>pendientes</strong></h3>
+                                                    <h4>you can use it with the small code</h4>
+                                                    <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a.</p>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane  p-20" id="pagadas" role="tabpanel">2</div>
+                                            <div class="tab-pane p-20" id="otrasfacturas" role="tabpanel">3</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #operador>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Medidor</a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de medidores</h4>
+                            </div>
+                            <div class="card-body table-responsive pt-2">
+                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+                                    <thead>
+                                        <tr>
+                                            <th>Nº</th>
+                                            <th>Nombres</th>
+                                            <th>Apellidos</th>
+                                            <th>Sector</th>
+                                            <th>Estado Usuario</th>
+                                            <th style="background: #e9ecef;">Num Medidor</th>
+                                            <th>Estado Medidor</th>
+                                            <th>Tipo</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let us of this.medidorusers; let i =index">
+                                            <td>{{ i + 1}}</td>
+                                            <td>{{ us.medidor.users.NOMBRES}}</td>
+                                            <td>{{ us.medidor.users.APELLIDOS}}</td>
+                                            <td>{{ us.medidor.users.SECTOR}}</td>
+                                            <td>
+                                                <span *ngIf="us.medidor.users.ESTADO=='1'">
+                                                    <span class="badge badge-success">Activo</span>
+                                                </span>
+                                                <span *ngIf="us.medidor.users.ESTADO=='0'">
+                                                    <span class="badge badge-danger">Inactivo</span>
+                                                </span>
+                                            </td>
+                                            <td style="background: #e9ecef;">
+                                                <strong>{{ us.medidor.NUMMEDIDOR}}</strong>
+                                            </td>
+                                            <td><b><strong>{{ us.medidor.ESTADO}}</strong></b></td>
+                                            <td>
+                                                <span *ngIf="us.NIVEL==1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-info">PRINCIPAL</div>
+                                                    </div>
+                                                </span>
+                                                <span *ngIf="us.NIVEL!=1">
+                                                    <div class="chat-content">
+                                                        <div class="box bg-light-inverse">SECUNDARIO</div>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-outline-secondary btn-xs" 
+                                                (click)="openVerModalUsers(verCliente,us)" title="Ver medidor">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                <a [routerLink]="['/medidor/detail',us.medidor.NUMMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,124 @@
+<div class="row card">
+	<div class="col-md-10 m-b-10">
+		<form role="form" #formRegistrarProveedor="ngForm" class="form-body" (ngSubmit)="createProveedor()">
+		    <h4 id="modal-basic-title">Registrar un nuevo Proveedor</h4>
+
+		    <div class="col-md-12">
+        		<div class="alert alert-danger" *ngIf="validarcedula=='0'"> 
+        			<i class="ti-user"></i> RUC / CI:<strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                </div>
+                <div class="alert alert-success" *ngIf="validarcedula=='1'"> 
+        			<i class="ti-user"></i> Datos validos: <strong *ngIf="tipo_cedula"> {{tipo_cedula}} </strong>.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                </div>
+        		<small>Datos obligatorios(<span class="text-danger"> * </span>) </small>
+        	</div>
+		    
+		    <div class="row">
+		        <div class="col-md-6 card-body">
+		        	<div class="row">
+		        		<div class="col-md-6">
+				        	<div class="form-group">
+				                <span class="control-label"><span class="text-danger"> * </span> RUC / CI</span>
+				                <input 
+				                type="text" 
+				                #ciruc="ngModel" 
+				                name="ciruc" 
+				                [(ngModel)]="proveedor.ciruc" 
+				                class="form-control form-control-sm" 
+				                placeholder="Ingrese su ciruc"
+				                pattern="[0-9]+" 
+				                (ngModelChange)="validarCI(ciruc)"
+				                required
+				                >
+
+				                <small *ngIf="!ciruc.valid &&ciruc.touched" class="badge badge-danger form-control-feedback" >RUC/CI ES OBLIGATORIO</small>
+				            </div>
+		        		</div>
+		        	</div>
+		            <div class="form-group">
+		                <span class="control-label"><span class="text-danger"> * </span> NOMBRES</span>
+		                <input type="text" 
+		                #nombres="ngModel" 
+		                name="nombres" 
+		                [(ngModel)]="proveedor.nombres" 
+		                class="form-control form-control-sm" 
+		                placeholder="Ingrese los nombres" 
+		                (ngModelChange)="convertirMayuscula(nombres)"
+		                required pattern="[a-zA-Z ]*" 
+		                style="text-transform: uppercase;">
+
+		                <small *ngIf="!nombres.valid &&nombres.touched" class="badge badge-danger form-control-feedback" >NOMBRES ES OBLIGATORIO</small>
+		            </div>
+		            <div class="form-group">
+		                <span class="control-label"><span class="text-danger"> * </span> APELLIDOS</span>
+		                <input type="text" 
+		                #apellidos="ngModel" 
+		                name="apellidos" 
+		                [(ngModel)]="proveedor.apellidos" 
+		                class="form-control form-control-sm" 
+		                placeholder="Ingrese los apellidos" 
+		                (ngModelChange)="convertirMayuscula(apellidos)"
+		                required pattern="[a-zA-Z ]*" 
+		                style="text-transform: uppercase;">
+
+		                <small *ngIf="!apellidos.valid &&apellidos.touched" class="badge badge-danger form-control-feedback" >APELLIDOS ES OBLIGATORIO</small>
+		            </div>
+		        	<div class="form-group">
+		                <span class="control-label">DIRECCION</span>
+		                <input type="text" #direccion="ngModel" name="direccion" [(ngModel)]="proveedor.direccion" class="form-control form-control-sm" placeholder="Ingrese la Direccion">
+		            </div>
+		            <div class="row">
+		            	<div class="col-md-6">
+				            <div class="form-group">
+				                <span class="control-label">CELULAR</span>
+				                <input type="text" #celular="ngModel" name="celular" [(ngModel)]="proveedor.celular" class="form-control form-control-sm" placeholder="Ingrese el celular" pattern="[0-9]*">
+				            </div>
+		            	</div>	
+		            	<div class="col-md-6">
+				            <div class="form-group">
+				                <span class="control-label">TELEFONO</span>
+				                <input type="text" #telefono="ngModel" name="telefono" [(ngModel)]="proveedor.telefono" class="form-control form-control-sm" placeholder="Ingrese el telefono" pattern="[0-9]*">
+				            </div>
+		            	</div>
+		            </div>
+		        </div>
+		        <div class="col-md-6 card-body">
+		            	
+		            <div class="form-group">
+		                <span class="control-label">RAZON SOCIAL</span>
+		                <input type="text" #razon_social="ngModel" name="razon_social" [(ngModel)]="proveedor.razon_social" class="form-control form-control-sm" placeholder="Ingrese la Razon Social">
+		            </div>
+		            <div class="form-group">
+		                <span class="control-label">EMAIL</span>
+		                <input type="email" 
+		                #email="ngModel" 
+		                name="email" 
+		                [(ngModel)]="proveedor.email" 
+		                class="form-control form-control-sm" 
+		                placeholder="Ingrese su EMAIL" 
+		                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+		                (ngModelChange)="validateEmail(email)"
+		                >
+
+		            </div>
+		            <div class="form-group">
+		                <span class="control-label">Pagina web</span>
+		                <input type="text" #pagina_web="ngModel" name="pagina_web" [(ngModel)]="proveedor.pagina_web" class="form-control form-control-sm" placeholder="Ingrese el pagina_web">
+		            </div>
+
+
+		        </div>
+		        <div class="col-md-12 card-body">
+				    <button type="submit" 
+				    class="btn btn-outline-success float-right" 
+				    [disabled]="!formRegistrarProveedor.form.valid"
+				    >
+				    	<i class="fa fa-check"></i> GUARDAR
+				    </button>
+		        </div>
+		    </div>
+		</form>
+	</div>
+</div>

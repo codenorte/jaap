@@ -1,0 +1,26 @@
+table.table-information, th, td {
+  border: 1px solid #007bff;
+}
+table.table-information {
+  border-collapse: collapse;
+}
+
+@media print{
+  .doNotPrint{display:none !important;}
+}
+
+p {
+  font-family: Lato;
+}
+
+#salto_pagina_despues{
+ 
+page-break-after:always;
+ 
+}
+ 
+#salto_pagina_anterior{
+ 
+page-break-before:always;
+ 
+}

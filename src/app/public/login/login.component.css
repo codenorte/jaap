@@ -1,0 +1,7 @@
+span.boton_showpass:hover{
+	color: black;
+}
+.input-group-addon:hover{
+	cursor: pointer;
+	background: #007bff59;
+}

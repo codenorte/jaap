@@ -1,0 +1,50 @@
+<div id="main-wrapper">
+	<app-header></app-header>
+	<app-sidebar></app-sidebar>
+	<div class="page-wrapper">
+		<div class="container-fluid">
+
+
+
+		<!-- Breadcrumbs -->
+		<app-breadcrumbs></app-breadcrumbs>
+
+
+		<nav class="navbar navbar-dark bg-primary navbar-expand-lg m-b-20">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" 
+						[routerLink]="['/proveedores']"
+						[routerLinkActive]="['active']"
+						[routerLinkActiveOptions]="{exact:true}"
+						>
+							Lista Proveedores <span class="sr-only">(current)</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" 
+						[routerLink]="['/proveedores/registrar']"
+						[routerLinkActive]="['active']"
+						[routerLinkActiveOptions]="{exact:true}"
+						>
+							Registrar Proveedores <span class="sr-only">(current)</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<router-outlet></router-outlet>
+
+
+
+		</div>
+		<app-footer></app-footer>
+	</div>
+</div>
+

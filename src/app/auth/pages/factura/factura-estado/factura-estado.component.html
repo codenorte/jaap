@@ -1,0 +1,155 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-template #administradores>
+	<div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Facturas por cobrar</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Usuarios con reconexion</a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Lista de medidores</h4>
+                            </div>
+                            <div class="card-body">
+                            	<div *ngIf="!temp_var">
+						            <div class="sk-spinner sk-spinner-three-bounce">
+						                <div class="sk-bounce1"></div>
+						                <div class="sk-bounce2"></div>
+						                <div class="sk-bounce3"></div>
+						            	<div class="sk-spinner sk-spinner-pulse"></div>
+						            </div>
+						        </div>
+                            	<div class="table-responsive pt-2">
+							        <div *ngIf="temp_var">
+		                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var">
+		                                    <thead>
+		                                        <tr>
+		                                            <th>Nº</th>
+		                                            <th>CI / RUC</th>
+		                                            <th>Nombres</th>
+		                                            <th>Apellidos</th>
+		                                            <th>Apodo</th>
+		                                            <th>Sector</th>
+		                                            <th style="background: #e9ecef;">Num Medidor</th>
+		                                            <th>Estado Medidor</th>
+		                                            <th>Meses deuda</th>
+		                                            <th>Opciones</th>
+		                                        </tr>
+		                                    </thead>
+		                                    <tbody>
+		                                        <tr *ngFor="let us of this.lista_facturaporcobrar; let i =index">
+		                                            <td>{{ i + 1}}</td>
+		                                            <td>{{ us.medidor.users.RUCCI}}</td>
+		                                            <td>{{ us.medidor.users.NOMBRES}}</td>
+		                                            <td>{{ us.medidor.users.APELLIDOS}}</td>
+		                                            <td>{{ us.medidor.users.APADOSN}}</td>
+		                                            <td>{{ us.medidor.users.SECTOR}}</td>
+		                                            <td style="background: #e9ecef;">
+		                                                <strong>{{ us.medidor.CODIGO}}</strong>
+		                                            </td>
+		                                            <td>
+		                                            	<span *ngIf="us.medidor.ESTADO=='ACTIVO'" class="text-success">
+		                                            		<strong> ACTIVO </strong>
+		                                            	</span>
+		                                            	<span *ngIf="us.medidor.ESTADO=='INACTIVO'" class="text-danger">
+		                                            		<strong> INACTIVO </strong>
+		                                            	</span>
+		                                            </td>
+		                                            <td>
+		                                                <div class="box bg-light-inverse">{{ us.mesesporpagar }}</div>
+		                                            </td>
+		                                            <td>
+		                                                <!-- <a class="btn btn-outline-secondary btn-xs" 
+		                                                (click)="openVerModalUsers(verCliente,us)" title="Ver medidor">
+		                                                    <i class="fa fa-eye"></i>
+		                                                </a> -->
+		                                                <a [routerLink]="['/medidor/detail',us.medidor.IDMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+		                                                    <i class="fa fa-arrow-right"></i>
+		                                                </a>
+		                                            </td>
+		                                        </tr>
+		                                    </tbody>
+		                                </table>
+							        </div>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="profile" role="tabpanel">
+                        <div class="card pt-2">
+                            <div class="card-header bg-info">
+                                <h4 class="m-b-0 text-white">Multas por mora</h4>
+                            </div>
+                            <div class="card-body">
+                                <div *ngIf="!temp_var_corte">
+						            <div class="sk-spinner sk-spinner-three-bounce">
+						                <div class="sk-bounce1"></div>
+						                <div class="sk-bounce2"></div>
+						                <div class="sk-bounce3"></div>
+						            	<div class="sk-spinner sk-spinner-pulse"></div>
+						            </div>
+						        </div>
+                            	<div class="table-responsive pt-2">
+							        <div *ngIf="temp_var_corte">
+		                                <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_var_corte">
+		                                    <thead>
+		                                        <tr>
+		                                            <th>Nº</th>
+		                                            <th>CI / RUC</th>
+		                                            <th>Nombres</th>
+		                                            <th>Apellidos</th>
+		                                            <th>Apodo</th>
+		                                            <th>Sector</th>
+		                                            <th style="background: #e9ecef;">Num Medidor</th>
+		                                            <th>Estado Medidor</th>
+		                                            <th>Fecha</th>
+		                                            <th>Multa</th>
+		                                            <th>Opciones</th>
+		                                        </tr>
+		                                    </thead>
+		                                    <tbody>
+		                                        <tr *ngFor="let us of this.lista_corte_user; let i =index">
+		                                            <td>{{ i + 1}}</td>
+		                                            <td>{{ us.medidor_select.users_name.RUCCI}}</td>
+		                                            <td>{{ us.medidor_select.users_name.NOMBRES}}</td>
+		                                            <td>{{ us.medidor_select.users_name.APELLIDOS}}</td>
+		                                            <td>{{ us.medidor_select.users_name.APADOSN}}</td>
+		                                            <td>{{ us.medidor_select.users_name.SECTOR}}</td>
+		                                            <td style="background: #e9ecef;">
+		                                                <strong>{{ us.medidor_select.NUMMEDIDOR}}</strong>
+		                                            </td>
+		                                            <td>
+		                                            	<span *ngIf="us.medidor_select.ESTADO=='ACTIVO'" class="text-success">
+		                                            		<strong> ACTIVO </strong>
+		                                            	</span>
+		                                            	<span *ngIf="us.medidor_select.ESTADO=='INACTIVO'" class="text-danger">
+		                                            		<strong> INACTIVO </strong>
+		                                            	</span>
+		                                            </td>
+		                                            <td>{{ us.FECHA}}</td>
+		                                            <td>{{ us.MULTA | currency}}</td>
+		                                            <td>
+		                                                <!-- <a class="btn btn-outline-secondary btn-xs" 
+		                                                (click)="openVerModalUsers(verCliente,us)" title="Ver medidor">
+		                                                    <i class="fa fa-eye"></i>
+		                                                </a> -->
+		                                                <a [routerLink]="['/medidor/detail',us.medidor_select.NUMMEDIDOR]" class="btn btn-outline-primary btn-xs" title="Detalle usuario">
+		                                                    <i class="fa fa-arrow-right"></i>
+		                                                </a>
+		                                            </td>
+		                                        </tr>
+		                                    </tbody>
+		                                </table>
+							        </div>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

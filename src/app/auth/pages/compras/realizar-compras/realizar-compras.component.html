@@ -1,0 +1,369 @@
+ <div class="row">
+    <div class="col-md-12">
+        <div class="card card-body printableArea">
+            <h3><b>COMPRAS</b></h3>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4> <b class="text-danger">Seleccionar Proveedor</b>
+                    </h4>
+                    <div class="form-group row">
+                        <div class="input-group">
+                            <ng-select2 [data]="lista_proveedores"
+                                        [width]="500">
+                            </ng-select2> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-info btn-sm" title="Agregar nuevo proveedor">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <address>
+                        <p class="text-muted m-l-5" *ngIf="proveedor_encontrado=='1'">
+                            <span *ngIf="proveedor.razon_social">
+                                <strong>Razon Social: {{proveedor.razon_social}} <br></strong>
+                            </span>
+                            <span *ngIf="proveedor.nombres">
+                                Nombres: {{proveedor.nombres}} {{proveedor.apellidos}} <br>
+                            </span>
+                            <span *ngIf="proveedor.telefono||proveedor.celular">
+                                Contacto: 
+                                <span *ngIf="proveedor.telefono">{{proveedor.telefono}}</span>
+                                <span *ngIf="proveedor.celular">/ {{proveedor.celular}}</span><br>
+                            </span>
+                            <span *ngIf="proveedor.direccion">
+                                Direccion: {{proveedor.direccion}} <br>
+                            </span>
+                            <span *ngIf="proveedor.email">
+                                Email: {{proveedor.email}} <br>
+                            </span>
+                            <span *ngIf="proveedor.pagina_web">
+                                Pagina web: {{proveedor.pagina_web}} <br>
+                            </span>
+
+                        </p>
+                        <span *ngIf="proveedor_encontrado=='0'">
+                            <strong>Crear nuevo proveedor </strong>
+                            <a class="btn btn-primary btn-sm" title="Agregar nuevo proveedor"
+                            (click)="openAddProveedorModal(addProveedor)"
+                            >
+                                 <i class="fa fa-plus"></i>
+                            </a>
+                        </span>
+                    </address>
+                </div>
+                <div class="col-md-6 text-right">
+                    <!-- <address>
+                        <h3>To,</h3>
+                        <h4 class="font-bold">Gaala & Sons,</h4>
+                        <p class="text-muted m-l-30">E 104, Dharti-2,
+                            <br/> Nr' Viswakarma Temple,
+                            <br/> Talaja Road,
+                            <br/> Bhavnagar - 364002</p>
+                        <p class="m-t-30"><b>Invoice Date :</b> <i class="fa fa-calendar"></i> 23rd Jan 2017</p>
+                        <p><b>Due Date :</b> <i class="fa fa-calendar"></i> 25th Jan 2017</p>
+                    </address> -->
+                </div>
+                <div class="col-md-12 row">
+                    <!-- <div class="col-sm-3">
+                        <form role="form" #formBuscarMaterial="ngForm" (ngSubmit)="buscarNombreMateriales()">
+                            <span for="uname" class="col-sm-3 control-label">Ingresar nombre del material:</span>
+                            <div class="input-group">
+                                <input 
+                                #nombre="ngModel" 
+                                name="nombre" 
+                                [(ngModel)]="materiales.nombre" 
+                                class="form-control form-control-sm" 
+                                placeholder="Ingrese el nombre"
+                                >
+                                <button type="submit" class="btn btn-info btn-sm">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div> -->
+                    <div class="col-sm-2">
+                        <span for="uname" class="col-sm-3 control-label">&nbsp;&nbsp;</span><br>
+                        <a (click)="openBuscarMaterialesModal(buscarMateriales)" class="btn btn-info btn-sm">
+                            Buscar material <i class="fa fa-search"></i>
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <span class="col-sm-3 control-label">&nbsp;&nbsp;</span><br>
+                        <a class="btn btn-success btn-sm">
+                            Crear nuevo <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                    <!-- <div class="col-md-3">
+                        <ng-select2  
+                            id="mat_nombre"
+                            name="mat_nombre"
+                            ng-model="SelectedItem"
+                            [data]="lista_materiales"
+                            [placeholder]="'Seleccione un material...'"
+                            [width]="300"
+                            
+                            (change)="buscarMaterial($event)"
+                            
+                            >
+
+                        </ng-select2>
+                    </div>       -->
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive m-t-40" style="clear: both;">
+                        <form [formGroup]="detallecomprasForm">
+                            <div formArrayName="listadetallecompras">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th width="110"></th>
+                                            <th>Nombre</th>
+                                            <th>Detalle</th>
+                                            <th>Codigo</th>
+                                            <th>Cant</th>
+                                            <th>categoria</th>
+                                            <th>Precio</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let us of listadetallecompras.controls;let i = index" id="fila{{i}}">
+                                            <td>
+                                               
+                                            </td>
+                                            <td>
+                                                {{ us.value.nombre }}
+                                            </td>
+                                            <td>{{ us.value.detalle}}</td>
+                                            <td>{{ us.value.codigo}}</td>
+                                            <td>{{ us.value.cantidad}}</td>
+                                            <td>{{ us.value.cantidad}}</td>
+                                            <td>
+                                                {{ us.value.precio}} 
+                                            </td>
+                                            <td>
+                                                {{ us.value.total}} 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right m-t-30 text-right">
+                        <p>Sub - Total amount: $13,848</p>
+                        <p>vat (10%) : $138 </p>
+                        <hr>
+                        <h3><b>Total :</b> $13,986</h3>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div class="text-right">
+                        <button class="btn btn-danger" type="submit"> Proceed to payment </button>
+                        <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modals agregar proveedor -->
+<ng-template #addProveedor let-modal>
+    <form role="form" #formRegistrarProveedor="ngForm">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Registrar un nuevo Proveedor</h4>
+            <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+                <i class="fa fa-fw fa-question"></i>
+            </button>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div id="acordion">
+                        <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                            <div class="jumbotron jumbotron-fluid p-2">
+                                <h5>Info</h5>
+                                <p>En esta seccion usted puede registrar un nuevo proveedor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 row">
+                    <div class="form-group col-md-6">
+                        <span class="control-label"><span class="text-danger"> * </span> RUC / CI</span>
+                        <input 
+                        type="text" 
+                        #ciruc="ngModel" 
+                        name="ciruc" 
+                        [(ngModel)]="proveedor.ciruc" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese su ciruc"
+                        pattern="[0-9]+" 
+                        (ngModelChange)="validarCI(ciruc)"
+                        required
+                        >
+
+                        <small *ngIf="!ciruc.valid &&ciruc.touched" class="badge badge-danger form-control-feedback" >RUC/CI ES OBLIGATORIO</small>
+                    </div><br>
+                    <div class="form-group">
+                        <span class="control-label">RAZON SOCIAL</span>
+                        <input type="text" #razon_social="ngModel" name="razon_social" [(ngModel)]="proveedor.razon_social" class="form-control form-control-sm" placeholder="Ingrese la Razon Social">
+                    </div><br>
+                    <div class="form-group col-md-6">
+                        <span class="control-label"><span class="text-danger"> * </span> NOMBRES</span>
+                        <input type="text" 
+                        #nombres="ngModel" 
+                        name="nombres" 
+                        [(ngModel)]="proveedor.nombres" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese los nombres" 
+                        (ngModelChange)="convertirMayuscula(nombres)"
+                        required pattern="[A-Za-z ]*" 
+                        style="text-transform: uppercase;">
+
+                        <small *ngIf="!nombres.valid &&nombres.touched" class="badge badge-danger form-control-feedback" >NOMBRES ES OBLIGATORIO</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span class="control-label"><span class="text-danger"> * </span> APELLIDOS</span>
+                        <input type="text" 
+                        #apellidos="ngModel" 
+                        name="apellidos" 
+                        [(ngModel)]="proveedor.apellidos" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese los apellidos" 
+                        (ngModelChange)="convertirMayuscula(apellidos)"
+                        required pattern="[A-Za-z ]*" 
+                        style="text-transform: uppercase;">
+
+                        <small *ngIf="!apellidos.valid &&apellidos.touched" class="badge badge-danger form-control-feedback" >APELLIDOS ES OBLIGATORIO</small>
+                    </div>
+                    <!-- <div class="form-group col-md-6">
+                        <span class="control-label">DIRECCION</span>
+                        <input type="text" #direccion="ngModel" name="direccion" [(ngModel)]="proveedor.direccion" class="form-control form-control-sm" placeholder="Ingrese la Direccion">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span class="control-label">CELULAR</span>
+                        <input type="text" #celular="ngModel" name="celular" [(ngModel)]="proveedor.celular" class="form-control form-control-sm" placeholder="Ingrese el celular" pattern="[0-9]*">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span class="control-label">TELEFONO</span>
+                        <input type="text" #telefono="ngModel" name="telefono" [(ngModel)]="proveedor.telefono" class="form-control form-control-sm" placeholder="Ingrese el telefono" pattern="[0-9]*">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span class="control-label">EMAIL</span>
+                        <input type="email" 
+                        #email="ngModel" 
+                        name="email" 
+                        [(ngModel)]="proveedor.email" 
+                        class="form-control form-control-sm" 
+                        placeholder="Ingrese su EMAIL" 
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                        (ngModelChange)="validateEmail(email)"
+                        >
+
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span class="control-label">Pagina web</span>
+                        <input type="text" #pagina_web="ngModel" name="pagina_web" [(ngModel)]="proveedor.pagina_web" class="form-control form-control-sm" placeholder="Ingrese el pagina_web" pattern="[0-9]*">
+                    </div> -->
+
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" 
+            class="btn btn-outline-success float-right" 
+            (click)="modal.close('guardar')"
+            [disabled]="!formRegistrarProveedor.form.valid"
+            >
+                <i class="fa fa-check"></i> GUARDAR
+            </button>
+            <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+                CERRAR
+            </button>
+        </div>
+    </form>
+</ng-template>
+<!--fin modals agregar proveedor -->
+
+
+<!--modals buscar materiales -->
+<ng-template #buscarMateriales let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Buscar materiales</h4>
+        <button type="button" class="close help btn btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoAddProductos" aria-expanded="false">
+            <i class="fa fa-fw fa-question"></i>
+        </button>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <div id="acordion">
+                    <div id="collapseInfoAddProductos" class="panel-collapse in collapse" style="">
+                        <div class="jumbotron jumbotron-fluid p-2">
+                            <h5>Info</h5>
+                            <p>En esta seccion usted podrá buscar los materiales que estan registrados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 row">
+                <div class="col-md-12">
+                    <h3>Seleccionar material</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive p-0">
+                        <table datatable [dtOptions]="dtOptions" class="table table-hover animate__animated animate__fadeIn" *ngIf="this.oject_materiales">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Detalle</th>
+                                    <th>Codigo</th>
+                                    <th>stock</th>
+                                    <th>categorias</th>
+                                    <th>Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let us of this.lista_de_materiales; let i =index">
+                                    <td>{{ i + 1}}</td>
+                                    <td>{{ us.nombre}}</td>
+                                    <td>{{ us.detalle}}</td>
+                                    <td>{{ us.codigo}}</td>
+                                    <td>{{ us.stock}}</td>
+                                    <td>{{ us.categoriasmat.nombre}}</td>
+                                    <td>
+                                        <button 
+                                        class="btn btn-info btn-sm" 
+                                        (click)="selectMaterialTable(us);modal.close('Cancelar')" 
+                                        >
+                                            Seleccionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" aria-label="Close" (click)="modal.close('Cancelar')">
+            CERRAR
+        </button>
+    </div>
+</ng-template>
+<!--fin modals buscar materiales -->

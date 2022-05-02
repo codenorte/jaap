@@ -1,0 +1,128 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+<ng-container *ngIf="roles_administrativos == 'operador'; then operador"></ng-container>
+
+<ng-template #administradores>
+</ng-template>
+
+<ng-template #operador>
+	<div class="row">
+    	<div class="col-12">
+            <div class="card pt-2">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">Registro de consumo</h4>
+                </div>
+                <div *ngIf="!temp_detallefactura">
+                	<span class="text-center">Cargando...</span>
+		            <div class="sk-spinner sk-spinner-three-bounce">
+		                <div class="sk-bounce1"></div>
+		                <div class="sk-bounce2"></div>
+		                <div class="sk-bounce3"></div>
+		            	<div class="sk-spinner sk-spinner-pulse"></div>
+		            </div>
+		            
+		        </div>
+                <div class="card-body" *ngIf="this.temp_detallefactura">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="p-20">
+                                <h3>Historial de lecturas anteriores</h3>
+                                <div *ngIf="datos_usuario_medidor">
+                                	<span>
+                                		<strong>{{datos_usuario_medidor.NOMBRES}} {{datos_usuario_medidor.APELLIDOS}} - <span class="text-danger"> ({{datos_usuario_medidor.APADOSN}}) </span></strong> 
+                                	</span>
+	                                <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseInfoDatosUsuario" aria-expanded="false">
+							            Ver datos <i class="fa fa-info"></i>
+							        </button>
+                                	<span *ngIf="datos_usuario_medidor.medidor.length>0" class="float-right">
+                                		<span *ngIf="datos_usuario_medidor.medidor[0].NUMMEDIDOR">
+                                			<strong>MEDIDOR: {{datos_usuario_medidor.medidor[0].NUMMEDIDOR}}</strong>
+                                		</span>
+                                	</span>
+							        <div id="acordion">
+					                    <div id="collapseInfoDatosUsuario" class="panel-collapse in collapse" style="">
+					                        <div class="jumbotron jumbotron-fluid p-2">
+				                                <div class="row">
+					                                <div class="col-md-6">
+					                                	<span *ngIf="datos_usuario_medidor.RUCCI">
+					                                		<strong>RUC / CI:</strong> {{datos_usuario_medidor.RUCCI}}
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.DIRECCION">
+					                                		<strong>Direccion:</strong> {{datos_usuario_medidor.DIRECCION}}
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.REFERENCIA">
+					                                		<strong>Referencia:</strong> {{datos_usuario_medidor.REFERENCIA}}
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.SECTOR">
+					                                		<strong>Sector:</strong> {{datos_usuario_medidor.SECTOR}}
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.email">
+					                                		<strong>Email:</strong> {{datos_usuario_medidor.email}}
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.ESTADO">
+					                                		<strong>Estado de usuario: </strong> 
+					                                		<span *ngIf="datos_usuario_medidor.ESTADO==1" class="text-success">
+					                                			ACTIVO
+					                                		</span>
+					                                		<span *ngIf="datos_usuario_medidor.ESTADO==0" class="text-danger">
+					                                			INACTIVO
+					                                		</span>
+					                                	</span> <br>
+					                                </div>
+					                                <div class="col-md-6" *ngIf="datos_usuario_medidor.medidor.length>0">
+					                                	<span *ngIf="datos_usuario_medidor.medidor[0].ESTADO">
+					                                		<strong>Estado de medidor: </strong> 
+					                                		<span *ngIf="datos_usuario_medidor.medidor[0].ESTADO=='ACTIVO'" class="text-success">
+					                                			ACTIVO
+					                                		</span>
+					                                		<span *ngIf="datos_usuario_medidor.medidor[0].ESTADO=='INACTIVO'" class="text-success">
+					                                			INACTIVO
+					                                		</span>
+					                                	</span> <br>
+					                                	<span *ngIf="datos_usuario_medidor.medidor[0].SERIE">
+					                                		<strong>Serie:</strong> {{datos_usuario_medidor.medidor[0].SERIE}}
+					                                	</span> <br>
+					                                </div>
+				                                </div>
+					                            
+					                        </div>
+					                    </div>
+					                </div>
+                                	
+                                </div>
+
+                                <div class="table-responsive p-0">
+                                    <table datatable [dtOptions]="dtOptions" class="table table-hover" *ngIf="this.temp_detallefactura">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Anio mes</th>
+                                                <th>Lectura anterior</th>
+                                                <th>Lectura actual</th>
+                                                <th>Consumo</th>
+                                                <th>Exceso</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let us of registros_detallefactura;let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ us.ANIOMES}}</td>
+                                                <td>
+                                                	{{ us.MEDIDAANT}}
+                                                </td>
+                                                <td>
+                                                	{{ us.MEDIDAACT}}
+                                                </td>
+                                                <td>{{us.CONSUMO}} m2</td>
+                                                <td>{{us.MEDEXCEDIDO}} m3</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

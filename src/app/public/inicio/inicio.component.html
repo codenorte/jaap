@@ -1,0 +1,82 @@
+<app-menu></app-menu>
+
+<!-- <app-slider></app-slider>
+ -->
+<owl-carousel-o [options]="customOptions">
+    <ng-template carouselSlide>
+        <div class="slide">
+            <img src="../../../assets/public/img/banner/banner.png">
+        </div>
+        <!-- <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="slider_text ">
+                        <h3> <span>JAAPT</span></h3>
+                        <p>Junta Administradora de Agua Potable de la Comunidad de Tocagón</p>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </ng-template>  
+    <ng-template carouselSlide>
+        <div class="slide">
+            <img src="../../../assets/public/img/banner/banner2.png">
+        </div>
+    </ng-template>  
+    <ng-template carouselSlide>
+        <div class="slide">
+            <img src="../../../assets/public/img/banner/banner.png">
+        </div>
+    </ng-template>  
+</owl-carousel-o>
+
+
+<!-- <owl-carousel-o [options]="customOptions">
+
+    <ng-container *ngFor="let slide of slideObject">
+        <ng-template carouselSlide [id]="slide.id">
+            <img [src]="slide.src" [alt]="slide.alt" [title]="slide.title">
+        </ng-template>
+    </ng-container>
+
+</owl-carousel-o> -->
+
+<!-- service_area_start -->
+<div class="service_area">
+    <div class="container p-0">
+        <div class="row no-gutters">
+            <div class="col-xl-4 col-md-4">
+                <div class="single_service">
+                    <div class="icon">
+                        <i class="flaticon-electrocardiogram"></i>
+                    </div>
+                    <h3>Comunidad Tocagón</h3>
+                    <p>Bienvenidos a la comunidad de Tacagón.</p>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4">
+                <div class="single_service">
+                    <div class="icon">
+                        <i class="flaticon-emergency-call"></i>
+                    </div>
+                    <h3>Junta Administradora de Agua Potable de Tocagón</h3>
+                    <p>Clinical excellence must be the priority for any health care service provider.</p>
+                    <a href="#" class="boxed-btn3-white">+10 672 356 3567</a>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4">
+                <div class="single_service">
+                    <div class="icon">
+                        <i class="flaticon-first-aid-kit"></i>
+                    </div>
+                    <h3>Chamber Service</h3>
+                    <p>Clinical excellence must be the priority for any health care service provider.</p>
+                    <a href="#" class="boxed-btn3-white">Make an Appointment</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- service_area_end -->
+
+<app-footer></app-footer>

@@ -1,0 +1,39 @@
+<ng-container *ngIf="roles_administrativos == 'admin'; then administradores"></ng-container>
+
+
+<ng-template #administradores>
+    <div class="row">
+      <div class="col-12">
+
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">seleccione una opcion</h4>
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-4">
+                        <div class="card card-outline-info">
+                            <div class="card-header">
+                                <h4 class="m-b-0 text-white">Crear nuevo usuario</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">En esta sección podrá crear un nuevo usuario y asignar un codigo de medidor disponible.</p>
+                                <a [routerLink]="['/medidor/agregar']" class="btn btn-info">Crear nuevo</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-outline-primary">
+                            <div class="card-header">
+                                <h4 class="m-b-0 text-white">Usuarios existentes</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">En esta sección podrá asignar un codigo de medidor a usuarios ya existentes a quienes el medidor haya sido retirado o sean usuarios nuevos sin asignar medidor.</p>
+                                <a [routerLink]="['/medidor/agregar-existente']" class="btn btn-primary">Agregar a usuario existente</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
