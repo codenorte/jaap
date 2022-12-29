@@ -132,7 +132,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-2">
-                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Codigo Medidor disponibles:</label>
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Número de Medidores disponibles:</label>
                                         <div class="col-6">
                                             <select class="form-control"  id="CODIGO"
                                                 [(ngModel)]="medidor.CODIGO" name="CODIGO" required>
@@ -141,15 +141,18 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Valor por conexion:</label>
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Valor de instalación:</label>
                                         <div class="col-6">
                                             <input type="number" #VALORPORCONEXION="ngModel" name="VALORPORCONEXION" [(ngModel)]="medidor.VALORPORCONEXION" placeholder="Ingrese su VALORPORCONEXION">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Fecha:</label>
+                                        <label for="example-password-input" class="col-6 col-form-label"><span class="text-danger"> * </span> Fecha de inicio de facturación:</label>
                                         <div class="col-6">
-                                            <input type="date" #FECHA="ngModel" name="FECHA" [(ngModel)]="medidor.FECHA" placeholder="Ingrese su FECHA">
+                                            <select class="form-control"  id="aniomes"
+                                                [(ngModel)]="controlaniomes" name="aniomes" required>
+                                                <option *ngFor="let g of listacontrolaniomes" [ngValue]="g">{{g.aniomes}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">

@@ -3,10 +3,12 @@ import { Router,ActivatedRoute } from '@angular/router';
 
 import { UsersService } from '../../../../services/auth/users.service';
 import { MedidorService } from '../../../../services/auth/medidor.service';
+import { ControlaniomesdetallefacturaService } from '../../../../services/auth/controlaniomesdetallefactura.service';
 import { ToastrService } from '../../../../common/service/toastr.service';
 
 import { Users } from '../../../../model/users';
 import { Medidor } from '../../../../model/medidor';
+import { Controlaniomesdetallefacturas } from '../../../../model/Controlaniomesdetallefacturas';
 
 import * as validateDocument from '../../../../../../node_modules/validate-document-ecuador';
 
@@ -21,29 +23,37 @@ export class MedidorAddComponent implements OnInit {
 
 	users:Users;
 	medidor:Medidor;
+	controlaniomes:Controlaniomesdetallefacturas;
 	sector;
 	institucion;
 	roles;
+	identity;
+	usuario_actual;
 
 	validarcedula = "";
 	tipo_cedula = '';
 	codigos_disponibles;
 	array_datos = [];
+	listacontrolaniomes;
 
 	constructor(
 		private _route:ActivatedRoute,
 		private _router:Router,
+		private _controlaniomesdetallefacturaService:ControlaniomesdetallefacturaService,
 		private _medidorService:MedidorService,
 		private _usersService:UsersService,
 		private toastrService:ToastrService
 	) {
 		this.users=new Users(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 		this.medidor = new Medidor(null,null,null,null,null,null,null,null,null,null,null);
+    this.controlaniomes= new Controlaniomesdetallefacturas(null,null,null,null,null);
+		this.identity = this._usersService.getIdentity();
 	}
 
 	ngOnInit(): void {
 		customStep();
 		this.cargar();
+		this.usuario_actual = this.identity.NOMBRES + ' ' + this.identity.APELLIDOS;
 	}
 
 	/*
@@ -68,17 +78,43 @@ export class MedidorAddComponent implements OnInit {
 			);
 	}
 	
+	/*
+	* Listar consumo mes
+	*/
+	getAllControlaniomesdetallefactura(){
+		this._controlaniomesdetallefacturaService.getAllControlaniomesdetallefactura().subscribe(
+			response=>{
+				if(response.code == 200){
+					console.log(response);
+					this.listacontrolaniomes = response.data;
+				}
+				else{
+					this.toastrService.Error("Error","Error");
+				}
+			},
+			error=>{
+				console.log(<any>error.error);
+				this.toastrService.Error("Error de datos","Error");
+
+			}
+			);
+	}
 
 	createMedidor(){
 		this.users.IDINSTITUCION=this.institucion.IDINSTITUCION;
 		this.users.roles_id=5;
+		//this.controlaniomes=this.controlaniomes.aniomes;
+		this.medidor.FECHA=this.controlaniomes.aniomes;
 		console.log(this.users);
 		console.log(this.medidor);
 		console.log(this.institucion);
+		console.log(this.controlaniomes);
 
 		this.array_datos.push({
 			users: this.users,
-			medidor: this.medidor
+			medidor: this.medidor,
+			controlaniomes:this.controlaniomes,
+			usuario_actual:this.usuario_actual
 		});
 
 		this._medidorService.createMedidor(this.array_datos).subscribe(
@@ -88,6 +124,7 @@ export class MedidorAddComponent implements OnInit {
 					this.toastrService.Success(response.message,response.title);
 					this.users=new Users(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 					this.medidor = new Medidor(null,null,null,null,null,null,null,null,null,null,null);
+ 				  this.controlaniomes= new Controlaniomesdetallefacturas(null,null,null,null,null);
 				}
 				else{
 					this.toastrService.Error("Error","Error");
@@ -161,6 +198,7 @@ export class MedidorAddComponent implements OnInit {
 	cargar(){
 		this.institucion=this._usersService.getInstitucion();
 		this.getCodigoMedidorDisponible();
+		this.getAllControlaniomesdetallefactura();
 		this.sector = [
 		      	{id: 1, name: "Capillapamba"},
 		      	{id: 2, name: "Coragaloma"},

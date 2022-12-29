@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router,ActivatedRoute,Params } from '@angular/router';
-import { Select2OptionData } from 'ng-select2';
+//import { Select2OptionData } from 'ng-select2';
 //services
 import { UsersService } from '../../../../services/auth/users.service';
 import { ProveedoresService } from '../../../../services/auth/proveedores.service';
@@ -68,7 +68,7 @@ export class RealizarComprasComponent implements OnInit {
   	//materiales
   	materiales : Materiales;
   	lista_de_materiales;
-  	public lista_materiales: Array<Select2OptionData>;
+  	//public lista_materiales: Array<Select2OptionData>;
   	public lista2:any[]=[];
   	oject_materiales:Object = false;
 
@@ -76,7 +76,7 @@ export class RealizarComprasComponent implements OnInit {
 
 	//proveedor
 	public array_proveedor:any[]=[];
-    public lista_proveedores: Array<Select2OptionData>;
+    //public lista_proveedores: Array<Select2OptionData>;
   
 
 	constructor(
@@ -150,8 +150,8 @@ export class RealizarComprasComponent implements OnInit {
 							data:response.data[i]
 						});
 					}
-					this.lista_proveedores= this.array_proveedor;
-					console.log(this.lista_proveedores);
+					//this.lista_proveedores= this.array_proveedor;
+					//console.log(this.lista_proveedores);
 				}
 				else{
 					this.toastrService.Error("Error","Error");
@@ -192,7 +192,7 @@ export class RealizarComprasComponent implements OnInit {
 						});
 						//this.lista2[i]= lista;
 					}
-					this.lista_materiales= this.lista2;
+					//this.lista_materiales= this.lista2;
 				}
 				else{
 					this.toastrService.Error("Error","Error");
@@ -294,11 +294,11 @@ export class RealizarComprasComponent implements OnInit {
 	}
 	//buscar
 	seleccionarMaterialCombo(){
-		$('#mat_nombre').on('select2:select', function (e) {
-		    var data = e.params.data;
-		    console.log(e);
-		    console.log(e.params);
-		    console.log(data);
+		//$('#mat_nombre').on('select2:select', function (e) {
+		    //var data = e.params.data;
+		    //console.log(e);
+		   // console.log(e.params);
+		   // console.log(data);
 		    //material_model.nombre='';
 		    
 		    /*
@@ -311,7 +311,7 @@ export class RealizarComprasComponent implements OnInit {
 			material_model.categoriasmat_id=data.;
 			material_model.compras_id=data.;
 			*/
-		});
+		//});
 	}
 	buscarMaterial(event){
 		console.log(event);

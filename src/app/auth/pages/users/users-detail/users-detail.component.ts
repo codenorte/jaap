@@ -60,8 +60,8 @@ export class UsersDetailComponent implements OnInit {
 			                this.medidorusers = res.data.medidorusers;
 			                this.temp_var=true;
 
-			                console.log(this.users);
-			                console.log(this.medidorusers);
+			                //console.log(this.users);
+			                //console.log(this.medidorusers);
 			            }else{
 			            	console.log(res);
 			            }

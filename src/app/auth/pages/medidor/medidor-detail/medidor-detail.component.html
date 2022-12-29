@@ -24,7 +24,10 @@
                                 <div class="col-md-4">
                                     <address *ngIf="usuario_dato">
                                         <h3><b class="text-danger">
-                                        	{{usuario_dato.NOMBRES}} {{usuario_dato.APELLIDOS}}</b>
+                                        	{{usuario_dato.NOMBRES}} {{usuario_dato.APELLIDOS}}
+                                            - {{usuario_dato.RUCCI}}
+
+                                        </b>
                                         </h3>
                                         <iframe src="" id="order_print" type="application/pdf" class="d-none"></iframe>
                                         <h4 class="font-bold">{{usuario_dato.APADOSN}}</h4>

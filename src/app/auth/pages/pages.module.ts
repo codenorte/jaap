@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { ChartsModule } from 'ng2-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //dependencias 
-import { NgSelect2Module } from 'ng-select2';
+//import { NgSelect2Module } from 'ng-select2';
 
 //form reactive
 import { ReactiveFormsModule } from '@angular/forms';
@@ -208,7 +208,7 @@ registerLocaleData(es);
     BrowserAnimationsModule,
     MatPaginatorModule,
     ReactiveFormsModule,
-    NgSelect2Module
+    //NgSelect2Module
   ],
   exports: [
     DashboardComponent,
