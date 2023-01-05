@@ -4,7 +4,7 @@ export class Controlaniomesdetallefacturas {
 		public detalle:string,
 		public conlectura:number,
 		public sinlectura:number,
-		public estado:string,
+		public estado:string
 		){
 	}
 }

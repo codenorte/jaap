@@ -8,7 +8,7 @@ import { ToastrService } from '../../../../common/service/toastr.service';
 
 import { Users } from '../../../../model/users';
 import { Medidor } from '../../../../model/medidor';
-import { Controlaniomesdetallefacturas } from '../../../../model/Controlaniomesdetallefacturas';
+import { Controlaniomesdetallefacturas } from '../../../../model/controlaniomesdetallefacturas';
 
 import * as validateDocument from '../../../../../../node_modules/validate-document-ecuador';
 
@@ -24,6 +24,7 @@ export class MedidorAddComponent implements OnInit {
 	users:Users;
 	medidor:Medidor;
 	controlaniomes:Controlaniomesdetallefacturas;
+
 	sector;
 	institucion;
 	roles;
@@ -54,6 +55,7 @@ export class MedidorAddComponent implements OnInit {
 		customStep();
 		this.cargar();
 		this.usuario_actual = this.identity.NOMBRES + ' ' + this.identity.APELLIDOS;
+
 	}
 
 	/*
@@ -104,7 +106,15 @@ export class MedidorAddComponent implements OnInit {
 		this.users.IDINSTITUCION=this.institucion.IDINSTITUCION;
 		this.users.roles_id=5;
 		//this.controlaniomes=this.controlaniomes.aniomes;
-		this.medidor.FECHA=this.controlaniomes.aniomes;
+
+		const str = this.controlaniomes.aniomes;
+		const [anio, mes] = str.split('-');
+		const dia = '01';
+		const date = new Date(+anio,+mes-1,+dia);
+
+		console.log(date);
+
+		this.medidor.FECHA=date;
 		console.log(this.users);
 		console.log(this.medidor);
 		console.log(this.institucion);
